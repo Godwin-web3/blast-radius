@@ -1,23 +1,10 @@
-import { createPublicClient, fallback, http } from "viem";
-import { mainnet } from "viem/chains";
+import { createPublicClient, fallback, http, type PublicClient } from "viem";
+import { CHAINS, rpcUrlsFor, type SupportedChain } from "./chains";
 
-const PUBLIC_RPCS: readonly string[] = [
-  "https://ethereum-rpc.publicnode.com",
-  "https://eth.llamarpc.com",
-  "https://rpc.ankr.com/eth",
-  "https://1rpc.io/eth",
-  "https://cloudflare-eth.com",
-  "https://eth.drpc.org",
-];
+export const ETHERSCAN_V2 = "https://api.etherscan.io/v2/api";
 
-function rpcList(): string[] {
-  const custom = process.env.RPC_URL?.trim();
-  const urls = custom ? [custom, ...PUBLIC_RPCS.filter((u) => u !== custom)] : [...PUBLIC_RPCS];
-  return urls;
-}
-
-export function getMainnetClient() {
-  const transports = rpcList().map((url) =>
+export function getChainClient(chain: SupportedChain): PublicClient {
+  const transports = rpcUrlsFor(chain).map((url) =>
     http(url, {
       timeout: 14_000,
       retryCount: 1,
@@ -25,11 +12,15 @@ export function getMainnetClient() {
     }),
   );
   return createPublicClient({
-    chain: mainnet,
+    chain: chain.viemChain,
     transport: fallback(transports, { rank: false }),
   });
 }
 
-export type MainnetClient = ReturnType<typeof getMainnetClient>;
+/** ENS lives on L1 even when the scan target is Base or Arbitrum. */
+export function getMainnetClient(): PublicClient {
+  return getChainClient(CHAINS.ethereum);
+}
 
-export const ETHERSCAN_V2 = "https://api.etherscan.io/v2/api";
+export type ChainClient = PublicClient;
+export type MainnetClient = PublicClient;

@@ -1,3 +1,4 @@
+import { CHAINS } from "@/lib/chains";
 import { POSTER_QUOTE } from "@/lib/headline";
 import { shortAddress } from "@/lib/format";
 import type { ScanResult } from "@/lib/types";
@@ -9,7 +10,7 @@ export function Poster({ result, path }: { result: ScanResult; path: string }) {
 
   return (
     <section className="poster">
-      <div className="poster-kicker">Blast Radius · Ethereum</div>
+      <div className="poster-kicker">Blast Radius · {result.chainName}</div>
       <h1>{result.headline.title}</h1>
       <p className="quote">“{POSTER_QUOTE}”</p>
       <div className="rows">
@@ -33,7 +34,11 @@ export function Poster({ result, path }: { result: ScanResult; path: string }) {
       </div>
       <div className="addr">{label}</div>
       {result.ens ? <div className="addr">{result.address}</div> : null}
-      <ShareBar path={path} filename={`blast-radius-${shortAddress(result.address, 4)}.png`} />
+      <ShareBar
+        path={path}
+        filename={`blast-radius-${result.chain}-${shortAddress(result.address, 4)}.png`}
+        revokeUrl={CHAINS[result.chain].revokeCashUrl(result.address)}
+      />
     </section>
   );
 }

@@ -1,5 +1,6 @@
 import { SearchForm } from "@/components/SearchForm";
 import { SiteFooter } from "@/components/SiteFooter";
+import { walletPath } from "@/lib/chains";
 import Link from "next/link";
 
 export default function HomePage() {
@@ -13,25 +14,31 @@ export default function HomePage() {
           <a href="https://revoke.cash" target="_blank" rel="noreferrer">
             revoke.cash
           </a>
-          <Link href="/w/vitalik.eth">vitalik.eth</Link>
+          <Link href={walletPath("ethereum", "vitalik.eth")}>vitalik.eth</Link>
         </nav>
       </header>
       <main className="hero">
-        <div className="kicker">Ethereum mainnet · live allowances</div>
+        <div className="kicker">Ethereum · Base · Arbitrum One · live allowances</div>
         <h1 className="display">Blast Radius</h1>
         <p className="lede">Paste a wallet. See what approvals can still move.</p>
         <SearchForm />
         <div className="hints">
-          <Link className="chip" href="/w/vitalik.eth">
+          <Link className="chip" href={walletPath("ethereum", "vitalik.eth")}>
             try vitalik.eth
           </Link>
-          <span className="chip">public RPC · optional Etherscan</span>
+          <Link className="chip" href={walletPath("base", "vitalik.eth")}>
+            same on Base
+          </Link>
+          <Link className="chip" href={walletPath("arbitrum", "vitalik.eth")}>
+            same on Arbitrum
+          </Link>
+          <span className="chip">one Etherscan key</span>
           <span className="chip">never fake USD</span>
         </div>
         <p className="fine">
-          Read-only. No keys, no signatures, no transactions. History from Approval
-          logs when the node allows it — current <code>allowance</code> is always
-          re-checked on-chain.
+          Read-only. No keys, no signatures, no transactions. Pick a chain, then
+          scan. History from Approval logs when the node allows it — current{" "}
+          <code>allowance</code> is always re-checked on-chain.
         </p>
         <div className="rings" aria-hidden="true">
           <span />
