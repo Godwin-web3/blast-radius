@@ -9,8 +9,8 @@ export const maxDuration = 30;
 export default async function OgImage({
   params,
 }: {
-  params: Promise<{ address: string }>;
+  params: Promise<{ chain: string }>;
 }) {
-  const { address } = await params;
-  return renderOgCard([address]);
+  const { chain } = await params;
+  return renderOgCard([chain]);
 }
