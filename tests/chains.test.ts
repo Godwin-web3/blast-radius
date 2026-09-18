@@ -4,8 +4,11 @@ import {
   CHAIN_LIST,
   ChainPathError,
   DEFAULT_CHAIN_SLUG,
+  EVM_CHAINS,
   getChain,
   getChainById,
+  isEvmChain,
+  isSolanaChain,
   parseChainSlug,
   parseWalletPath,
   rpcUrlsFor,
@@ -14,20 +17,26 @@ import {
 import { CATALOGS, PERMIT2, labelSpender } from "@/lib/known";
 
 describe("chain registry", () => {
-  it("maps ethereum, base, and arbitrum one chainids", () => {
+  it("maps ethereum, base, arbitrum one, and solana", () => {
     expect(CHAINS.ethereum.chainId).toBe(1);
     expect(CHAINS.base.chainId).toBe(8453);
     expect(CHAINS.arbitrum.chainId).toBe(42161);
+    expect(CHAINS.solana.chainId).toBe("solana");
+    expect(CHAINS.ethereum.family).toBe("evm");
+    expect(CHAINS.solana.family).toBe("solana");
     expect(CHAINS.ethereum.etherscanChainId).toBe("1");
     expect(CHAINS.base.etherscanChainId).toBe("8453");
     expect(CHAINS.arbitrum.etherscanChainId).toBe("42161");
-    expect(CHAIN_LIST).toHaveLength(3);
+    expect(CHAIN_LIST).toHaveLength(4);
+    expect(EVM_CHAINS).toHaveLength(3);
   });
 
-  it("uses one Etherscan v2 chainid field per network", () => {
-    for (const chain of CHAIN_LIST) {
+  it("uses one Etherscan v2 chainid field per EVM network", () => {
+    for (const chain of CHAIN_LIST.filter(isEvmChain)) {
       expect(chain.etherscanChainId).toBe(String(chain.chainId));
     }
+    expect(isSolanaChain(CHAINS.solana)).toBe(true);
+    expect("etherscanChainId" in CHAINS.solana).toBe(false);
   });
 
   it("parses aliases", () => {
@@ -36,6 +45,8 @@ describe("chain registry", () => {
     expect(parseChainSlug("base")).toBe("base");
     expect(parseChainSlug("arb")).toBe("arbitrum");
     expect(parseChainSlug("arbitrum-one")).toBe("arbitrum");
+    expect(parseChainSlug("solana")).toBe("solana");
+    expect(parseChainSlug("SOL")).toBe("solana");
     expect(parseChainSlug("polygon")).toBeNull();
   });
 
@@ -43,6 +54,7 @@ describe("chain registry", () => {
     expect(getChain(null).slug).toBe(DEFAULT_CHAIN_SLUG);
     expect(getChain(undefined).chainId).toBe(1);
     expect(getChainById(8453)?.slug).toBe("base");
+    expect(getChainById("solana")?.slug).toBe("solana");
     expect(getChainById(10)).toBeNull();
   });
 
@@ -58,6 +70,30 @@ describe("chain registry", () => {
         delete process.env.BASE_RPC_URL;
       } else {
         process.env.BASE_RPC_URL = prev;
+      }
+    }
+  });
+
+  it("prepends SOLANA_RPC and optional Helius JSON-RPC", () => {
+    const prevRpc = process.env.SOLANA_RPC;
+    const prevHelius = process.env.HELIUS_API_KEY;
+    process.env.SOLANA_RPC = "https://example.invalid/solana";
+    process.env.HELIUS_API_KEY = "test-key";
+    try {
+      const urls = rpcUrlsFor(CHAINS.solana);
+      expect(urls[0]).toBe("https://example.invalid/solana");
+      expect(urls[1]).toBe("https://mainnet.helius-rpc.com/?api-key=test-key");
+      expect(urls).toContain(CHAINS.solana.publicRpcs[0]);
+    } finally {
+      if (prevRpc === undefined) {
+        delete process.env.SOLANA_RPC;
+      } else {
+        process.env.SOLANA_RPC = prevRpc;
+      }
+      if (prevHelius === undefined) {
+        delete process.env.HELIUS_API_KEY;
+      } else {
+        process.env.HELIUS_API_KEY = prevHelius;
       }
     }
   });
@@ -83,6 +119,16 @@ describe("wallet path encoding", () => {
     expect(parsed.query).toBe("vitalik.eth");
   });
 
+  it("encodes /w/solana/[base58] as Solana", () => {
+    const addr = "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM";
+    const parsed = parseWalletPath(["solana", addr]);
+    expect(parsed.chain.slug).toBe("solana");
+    expect(parsed.chain.family).toBe("solana");
+    expect(parsed.query).toBe(addr);
+    expect(walletPath("solana", addr)).toBe(`/w/solana/${encodeURIComponent(addr)}`);
+    expect(() => parseWalletPath(["solana"])).toThrow(ChainPathError);
+  });
+
   it("rejects a chain slug with no wallet", () => {
     expect(() => parseWalletPath(["base"])).toThrow(ChainPathError);
     try {
@@ -101,6 +147,9 @@ describe("wallet path encoding", () => {
     expect(walletPath("ethereum", "vitalik.eth")).toBe("/w/ethereum/vitalik.eth");
     expect(walletPath("base", "vitalik.eth")).toBe("/w/base/vitalik.eth");
     expect(walletPath(CHAINS.arbitrum, " 0xabc ")).toBe("/w/arbitrum/0xabc");
+    expect(walletPath("solana", "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM")).toBe(
+      "/w/solana/9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM",
+    );
     const encoded = walletPath("base", "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045");
     expect(encoded.startsWith("/w/base/")).toBe(true);
     expect(encoded).not.toBe("/w/0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045");

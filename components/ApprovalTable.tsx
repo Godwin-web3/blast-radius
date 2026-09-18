@@ -1,20 +1,27 @@
-import type { OpenApproval } from "@/lib/types";
 import { CHAINS } from "@/lib/chains";
 import { formatAllowance, formatUnits, shortAddress } from "@/lib/format";
 import { formatUsdCompact } from "@/lib/headline";
+import { isSplKind, type OpenApproval } from "@/lib/types";
 
 export function ApprovalTable({
   approvals,
   explorerUrl = CHAINS.ethereum.explorer.addressUrl,
+  family = "evm",
 }: {
   approvals: OpenApproval[];
   explorerUrl?: (address: string) => string;
+  family?: "evm" | "solana";
 }) {
+  const solana = family === "solana";
   if (approvals.length === 0) {
     return (
       <div className="empty">
         <h2>CLEAN</h2>
-        <p className="muted">No open allowances found in this scan window.</p>
+        <p className="muted">
+          {solana
+            ? "No open SPL / Token-2022 delegates found on this wallet."
+            : "No open allowances found in this scan window."}
+        </p>
       </div>
     );
   }
@@ -25,8 +32,8 @@ export function ApprovalTable({
         <thead>
           <tr>
             <th>Token</th>
-            <th>Spender</th>
-            <th>Allowance</th>
+            <th>{solana ? "Delegate" : "Spender"}</th>
+            <th>{solana ? "Delegated" : "Allowance"}</th>
             <th>Balance</th>
             <th>Movable now</th>
           </tr>
@@ -49,9 +56,16 @@ export function ApprovalTable({
               <td>
                 {a.kind === "erc721-for-all" || a.unlimited ? (
                   <span className="pill">UNLIMITED</span>
+                ) : isSplKind(a.kind) ? (
+                  formatUnits(a.allowance, a.decimals)
                 ) : (
                   formatAllowance(a.allowance, a.decimals)
                 )}
+                {a.frozen ? (
+                  <div className="muted" style={{ marginTop: 4 }}>
+                    frozen
+                  </div>
+                ) : null}
               </td>
               <td>
                 {a.kind === "erc721-for-all"
@@ -67,7 +81,11 @@ export function ApprovalTable({
                     ? formatUsdCompact(a.usdMovable)
                     : a.movable > 0n
                       ? formatUnits(a.movable, a.decimals)
-                      : "0 (approval still open)"}
+                      : a.frozen
+                        ? "0 (frozen — delegate still set)"
+                        : solana
+                          ? "0 (delegate still open)"
+                          : "0 (approval still open)"}
               </td>
             </tr>
           ))}

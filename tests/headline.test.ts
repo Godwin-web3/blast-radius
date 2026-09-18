@@ -66,6 +66,26 @@ describe("buildHeadline", () => {
     expect(h.title.includes("$")).toBe(false);
   });
 
+  it("says OPEN DELEGATES for limited Solana rows", () => {
+    const h = buildHeadline(
+      [
+        approval({
+          id: "spl",
+          kind: "spl-delegate",
+          token: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          spender: "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
+          allowance: 100n,
+          movable: 100n,
+          balance: 100n,
+          decimals: 6,
+        }),
+      ],
+      { noun: "delegate" },
+    );
+    expect(h.title).toBe("1 OPEN DELEGATE");
+    expect(h.hasUsd).toBe(false);
+  });
+
   it("labels mixed priced/unpriced honestly", () => {
     const h = buildHeadline([
       approval({

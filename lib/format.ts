@@ -1,4 +1,5 @@
 import { isUnlimitedAllowance } from "./unlimited";
+import { isSplKind, type OpenApproval } from "./types";
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
@@ -7,7 +8,10 @@ export function shortAddress(address: string, size = 4): string {
   if (a.length < 10) {
     return a;
   }
-  return `${a.slice(0, 2 + size)}…${a.slice(-size)}`;
+  if (a.startsWith("0x") || a.startsWith("0X")) {
+    return `${a.slice(0, 2 + size)}…${a.slice(-size)}`;
+  }
+  return `${a.slice(0, size)}…${a.slice(-size)}`;
 }
 
 export function isZeroAddress(address: string): boolean {
@@ -39,6 +43,17 @@ export function formatAllowance(allowance: bigint, decimals: number): string {
     return "UNLIMITED";
   }
   return formatUnits(allowance, decimals);
+}
+
+/** Poster/table tag: Solana shows amount or UNLIMITED, EVM shows UNLIMITED/LIMITED. */
+export function exposureTag(approval: Pick<OpenApproval, "kind" | "unlimited" | "allowance" | "decimals">): string {
+  if (approval.kind === "erc721-for-all" || approval.unlimited) {
+    return "UNLIMITED";
+  }
+  if (isSplKind(approval.kind)) {
+    return formatUnits(approval.allowance, approval.decimals);
+  }
+  return "LIMITED";
 }
 
 export function padTopicAddress(address: string): `0x${string}` {

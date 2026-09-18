@@ -5,7 +5,11 @@ const TTL_MS = 45_000;
 const store = new Map<string, { at: number; result: ScanResult }>();
 
 export function cacheKey(chain: ChainSlug, query: string): string {
-  return `${chain}:${query.trim().toLowerCase()}`;
+  const trimmed = query.trim();
+  if (chain === "solana") {
+    return `${chain}:${trimmed}`;
+  }
+  return `${chain}:${trimmed.toLowerCase()}`;
 }
 
 export function getCachedScan(chain: ChainSlug, query: string): ScanResult | null {

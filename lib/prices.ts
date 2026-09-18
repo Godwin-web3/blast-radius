@@ -12,7 +12,11 @@ export async function fetchUsdPrices(
   timeoutMs = 7000,
 ): Promise<PriceMap> {
   const unique = [
-    ...new Set(tokenAddresses.map((a) => a.toLowerCase()).filter((a) => a.startsWith("0x"))),
+    ...new Set(
+      chain.family === "solana"
+        ? tokenAddresses.map((a) => a.trim()).filter((a) => a.length >= 32)
+        : tokenAddresses.map((a) => a.toLowerCase()).filter((a) => a.startsWith("0x")),
+    ),
   ].slice(0, 12);
   const map: PriceMap = new Map();
   if (unique.length === 0) {

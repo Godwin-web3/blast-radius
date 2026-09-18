@@ -1,4 +1,7 @@
 import type { Headline, OpenApproval } from "./types";
+import { isFungibleKind } from "./types";
+
+export type HeadlineNoun = "allowance" | "delegate";
 
 function roundUsd(n: number): number {
   if (!Number.isFinite(n) || n <= 0) {
@@ -36,7 +39,11 @@ export function formatUsdCompact(amount: number): string {
  * live price source) returned a price for at least one movable balance.
  * We never invent a USD number.
  */
-export function buildHeadline(approvals: readonly OpenApproval[]): Headline {
+export function buildHeadline(
+  approvals: readonly OpenApproval[],
+  options: { noun?: HeadlineNoun } = {},
+): Headline {
+  const noun = options.noun ?? inferHeadlineNoun(approvals);
   const openCount = approvals.length;
   const unlimitedCount = approvals.filter((a) => a.unlimited).length;
 
@@ -46,7 +53,7 @@ export function buildHeadline(approvals: readonly OpenApproval[]): Headline {
   let anyPrice = false;
 
   for (const a of approvals) {
-    if (a.kind !== "erc20") {
+    if (!isFungibleKind(a.kind)) {
       continue;
     }
     if (a.usdMovable != null) {
@@ -104,8 +111,17 @@ export function buildHeadline(approvals: readonly OpenApproval[]): Headline {
     };
   }
 
+  const openTitle =
+    noun === "delegate"
+      ? openCount === 1
+        ? "1 OPEN DELEGATE"
+        : `${openCount} OPEN DELEGATES`
+      : openCount === 1
+        ? "1 OPEN ALLOWANCE"
+        : `${openCount} OPEN ALLOWANCES`;
+
   return {
-    title: openCount === 1 ? "1 OPEN ALLOWANCE" : `${openCount} OPEN ALLOWANCES`,
+    title: openTitle,
     hasUsd: false,
     usdTotal: null,
     openCount,
@@ -115,5 +131,22 @@ export function buildHeadline(approvals: readonly OpenApproval[]): Headline {
   };
 }
 
+function inferHeadlineNoun(approvals: readonly OpenApproval[]): HeadlineNoun {
+  if (approvals.some((a) => a.kind === "spl-delegate" || a.kind === "spl-permanent-delegate")) {
+    return "delegate";
+  }
+  return "allowance";
+}
+
 export const POSTER_QUOTE =
   "Still movable if these spenders turn hostile.";
+
+export const SOLANA_POSTER_QUOTE =
+  "Still movable if these delegates turn hostile.";
+
+export function posterQuote(noun: HeadlineNoun | "evm" | "solana" = "allowance"): string {
+  if (noun === "delegate" || noun === "solana") {
+    return SOLANA_POSTER_QUOTE;
+  }
+  return POSTER_QUOTE;
+}

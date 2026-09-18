@@ -9,5 +9,8 @@ describe("scan cache keys", () => {
     expect(cacheKey("ethereum", "vitalik.eth")).not.toBe(
       cacheKey("arbitrum", "vitalik.eth"),
     );
+    const sol = "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM";
+    expect(cacheKey("solana", sol)).toBe(`solana:${sol}`);
+    expect(cacheKey("solana", sol)).not.toBe(cacheKey("solana", sol.toLowerCase()));
   });
 });

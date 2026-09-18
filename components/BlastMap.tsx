@@ -11,16 +11,22 @@ function polar(index: number, total: number, radius: number): { x: number; y: nu
 export function BlastMap({
   address,
   approvals,
+  family = "evm",
 }: {
   address: string;
   approvals: OpenApproval[];
+  family?: "evm" | "solana";
 }) {
   const nodes = approvals.slice(0, 24);
-  const short = `${address.slice(0, 6)}…${address.slice(-4)}`;
+  const short =
+    address.startsWith("0x") || address.startsWith("0X")
+      ? `${address.slice(0, 6)}…${address.slice(-4)}`
+      : `${address.slice(0, 4)}…${address.slice(-4)}`;
+  const label = family === "solana" ? "Blast map of open delegates" : "Blast map of open approvals";
 
   return (
     <div className="map-wrap" aria-hidden={nodes.length === 0}>
-      <svg viewBox="0 0 1200 680" role="img" aria-label="Blast map of open approvals">
+      <svg viewBox="0 0 1200 680" role="img" aria-label={label}>
         <defs>
           <radialGradient id="core" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stopColor="#ffb020" stopOpacity="0.9" />

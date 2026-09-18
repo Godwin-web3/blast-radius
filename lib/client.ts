@@ -1,9 +1,9 @@
 import { createPublicClient, fallback, http, type PublicClient } from "viem";
-import { CHAINS, rpcUrlsFor, type SupportedChain } from "./chains";
+import { CHAINS, rpcUrlsFor, type EvmChain } from "./chains";
 
 export const ETHERSCAN_V2 = "https://api.etherscan.io/v2/api";
 
-export function getChainClient(chain: SupportedChain): PublicClient {
+export function getChainClient(chain: EvmChain): PublicClient {
   const transports = rpcUrlsFor(chain).map((url) =>
     http(url, {
       timeout: 14_000,

@@ -18,9 +18,9 @@ export default function HomePage() {
         </nav>
       </header>
       <main className="hero">
-        <div className="kicker">Ethereum · Base · Arbitrum One · live allowances</div>
+        <div className="kicker">Ethereum · Base · Arbitrum One · Solana</div>
         <h1 className="display">Blast Radius</h1>
-        <p className="lede">Paste a wallet. See what approvals can still move.</p>
+        <p className="lede">Paste a wallet. See what can still move.</p>
         <SearchForm />
         <div className="hints">
           <Link className="chip" href={walletPath("ethereum", "vitalik.eth")}>
@@ -32,13 +32,13 @@ export default function HomePage() {
           <Link className="chip" href={walletPath("arbitrum", "vitalik.eth")}>
             same on Arbitrum
           </Link>
-          <span className="chip">one Etherscan key</span>
+          <span className="chip">Solana delegates</span>
           <span className="chip">never fake USD</span>
         </div>
         <p className="fine">
           Read-only. No keys, no signatures, no transactions. Pick a chain, then
-          scan. History from Approval logs when the node allows it — current{" "}
-          <code>allowance</code> is always re-checked on-chain.
+          scan. EVM: live <code>allowance</code> re-check. Solana: live token-account
+          delegates — not ERC-20 approvals.
         </p>
         <div className="rings" aria-hidden="true">
           <span />
