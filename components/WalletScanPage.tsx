@@ -9,15 +9,9 @@ import { ResolveError } from "@/lib/resolve";
 import type { Metadata } from "next";
 import Link from "next/link";
 
-export const dynamic = "force-dynamic";
-export const maxDuration = 60;
-
-type Props = { params: Promise<{ slug: string[] }> };
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
+export async function walletMetadata(segments: readonly string[]): Promise<Metadata> {
   try {
-    const parsed = parseWalletPath(slug);
+    const parsed = parseWalletPath(segments);
     const q = parsed.query || parsed.chain.slug;
     return {
       title: `${q} · ${parsed.chain.name}`,
@@ -31,15 +25,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default async function WalletPage({ params }: Props) {
-  const { slug } = await params;
-
+export async function WalletScanPage({ segments }: { segments: readonly string[] }) {
   let error: string | null = null;
   let result = null;
   let parsed: ReturnType<typeof parseWalletPath> | null = null;
 
   try {
-    parsed = parseWalletPath(slug);
+    parsed = parseWalletPath(segments);
     if (!parsed.query) {
       error = "Paste a 0x address or ENS name.";
     } else {

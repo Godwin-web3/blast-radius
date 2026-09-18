@@ -5,11 +5,7 @@ import { POSTER_QUOTE } from "@/lib/headline";
 import { scanWallet } from "@/lib/scan";
 import type { ScanResult } from "@/lib/types";
 
-export const runtime = "nodejs";
-export const alt = "Blast Radius share card";
-export const size = { width: 1200, height: 630 };
-export const contentType = "image/png";
-export const maxDuration = 30;
+export const OG_SIZE = { width: 1200, height: 630 };
 
 async function safeScan(query: string, chainSlug: ScanResult["chain"]): Promise<ScanResult | null> {
   const cached = getCachedScan(chainSlug, query);
@@ -37,18 +33,13 @@ function topRows(result: ScanResult | null): Array<{ token: string; spender: str
   }));
 }
 
-export default async function OgImage({
-  params,
-}: {
-  params: Promise<{ slug: string[] }>;
-}) {
-  const { slug } = await params;
+export async function renderOgCard(segments: readonly string[]): Promise<ImageResponse> {
   let chainKicker = "ETHEREUM";
-  let query = slug.join("/");
+  let query = segments.join("/");
   let result: ScanResult | null = null;
 
   try {
-    const parsed = parseWalletPath(slug);
+    const parsed = parseWalletPath(segments);
     chainKicker = parsed.chain.posterKicker;
     query = parsed.query || parsed.chain.name;
     if (parsed.query) {
@@ -59,7 +50,7 @@ export default async function OgImage({
     }
   } catch (err) {
     if (!(err instanceof ChainPathError)) {
-      query = slug[slug.length - 1] ?? query;
+      query = segments[segments.length - 1] ?? query;
     }
   }
 
@@ -187,6 +178,6 @@ export default async function OgImage({
         </div>
       </div>
     ),
-    { ...size },
+    { ...OG_SIZE },
   );
 }
