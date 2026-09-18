@@ -7,18 +7,16 @@ import {
   type Hex,
 } from "viem";
 import { getCachedScan, setCachedScan } from "./cache";
-import { ETHERSCAN_V2, getMainnetClient, type MainnetClient } from "./client";
+import {
+  CHAINS,
+  getChain,
+  type ChainSlug,
+  type SupportedChain,
+} from "./chains";
+import { ETHERSCAN_V2, getChainClient, getMainnetClient, type ChainClient } from "./client";
 import { isZeroAddress, padTopicAddress, topicToAddress } from "./format";
 import { buildHeadline } from "./headline";
-import {
-  KNOWN_NFTS,
-  KNOWN_OPERATORS,
-  KNOWN_SPENDERS,
-  KNOWN_TOKENS,
-  knownNft,
-  knownToken,
-  labelSpender,
-} from "./known";
+import { catalogFor, knownNft, knownToken, labelSpender, type KnownCatalog } from "./known";
 import { fetchUsdPrices, usdFromAtomic } from "./prices";
 import { approvalId, rankApprovals } from "./ranking";
 import { resolveWallet } from "./resolve";
@@ -75,7 +73,7 @@ function okResult<T>(row: CallResult<T> | undefined): T | null {
 }
 
 async function multicallChunk<T>(
-  client: MainnetClient,
+  client: ChainClient,
   contracts: readonly Record<string, unknown>[],
 ): Promise<CallResult<T>[]> {
   const out: CallResult<T>[] = [];
@@ -99,14 +97,15 @@ async function multicallChunk<T>(
 }
 
 async function probeKnownPairs(
-  client: MainnetClient,
+  client: ChainClient,
   owner: Address,
+  catalog: KnownCatalog,
 ): Promise<Map<string, Pair>> {
   const pairs = new Map<string, Pair>();
   const allowanceCalls = [];
   const allowanceMeta: Pair[] = [];
-  for (const token of KNOWN_TOKENS) {
-    for (const spender of KNOWN_SPENDERS) {
+  for (const token of catalog.tokens) {
+    for (const spender of catalog.spenders) {
       allowanceCalls.push({
         address: token.address,
         abi: erc20Abi,
@@ -133,8 +132,8 @@ async function probeKnownPairs(
 
   const nftCalls = [];
   const nftMeta: Pair[] = [];
-  for (const nft of KNOWN_NFTS) {
-    for (const operator of KNOWN_OPERATORS) {
+  for (const nft of catalog.nfts) {
+    for (const operator of catalog.operators) {
       nftCalls.push({
         address: nft.address,
         abi: erc721Abi,
@@ -168,7 +167,7 @@ type LogScan = {
 };
 
 async function discoverLogsRpc(
-  client: MainnetClient,
+  client: ChainClient,
   owner: Address,
   latest: bigint,
 ): Promise<LogScan> {
@@ -276,6 +275,7 @@ type EtherscanLog = {
 };
 
 async function etherscanJson(
+  chain: SupportedChain,
   params: Record<string, string>,
 ): Promise<unknown> {
   const key = process.env.ETHERSCAN_API_KEY?.trim();
@@ -283,7 +283,7 @@ async function etherscanJson(
     return null;
   }
   const url = new URL(ETHERSCAN_V2);
-  url.searchParams.set("chainid", "1");
+  url.searchParams.set("chainid", chain.etherscanChainId);
   url.searchParams.set("apikey", key);
   for (const [k, v] of Object.entries(params)) {
     url.searchParams.set(k, v);
@@ -329,6 +329,7 @@ function ingestEtherscanLogs(
 }
 
 async function discoverEtherscan(
+  chain: SupportedChain,
   owner: Address,
 ): Promise<{ pairs: Map<string, Pair>; used: boolean }> {
   const key = process.env.ETHERSCAN_API_KEY?.trim();
@@ -338,7 +339,7 @@ async function discoverEtherscan(
   }
 
   const ownerTopic = padTopicAddress(owner);
-  const globalErc20 = await etherscanJson({
+  const globalErc20 = await etherscanJson(chain, {
     module: "logs",
     action: "getLogs",
     fromBlock: "0",
@@ -351,7 +352,7 @@ async function discoverEtherscan(
   });
   ingestEtherscanLogs(pairs, globalErc20, "erc20");
 
-  const globalNft = await etherscanJson({
+  const globalNft = await etherscanJson(chain, {
     module: "logs",
     action: "getLogs",
     fromBlock: "0",
@@ -364,7 +365,7 @@ async function discoverEtherscan(
   });
   ingestEtherscanLogs(pairs, globalNft, "erc721-for-all");
 
-  const txPayload = await etherscanJson({
+  const txPayload = await etherscanJson(chain, {
     module: "account",
     action: "tokentx",
     address: owner,
@@ -415,7 +416,7 @@ async function discoverEtherscan(
       if (!token) {
         continue;
       }
-      const payload = await etherscanJson({
+      const payload = await etherscanJson(chain, {
         module: "logs",
         action: "getLogs",
         address: token,
@@ -432,7 +433,7 @@ async function discoverEtherscan(
   };
   await Promise.all(Array.from({ length: concurrency }, () => run()));
 
-  const nftPayload = await etherscanJson({
+  const nftPayload = await etherscanJson(chain, {
     module: "account",
     action: "tokennfttx",
     address: owner,
@@ -463,7 +464,7 @@ async function discoverEtherscan(
       }
     }
     for (const token of nftContracts) {
-      const payload = await etherscanJson({
+      const payload = await etherscanJson(chain, {
         module: "logs",
         action: "getLogs",
         address: token,
@@ -492,7 +493,8 @@ type Rechecked = {
 };
 
 async function recheckPairs(
-  client: MainnetClient,
+  client: ChainClient,
+  chain: SupportedChain,
   owner: Address,
   pairs: Pair[],
 ): Promise<Rechecked[]> {
@@ -541,7 +543,7 @@ async function recheckPairs(
     if (allowance == null || allowance <= 0n) {
       return;
     }
-    const known = knownToken(pair.token);
+    const known = knownToken(pair.token, chain);
     const balance = okResult(balances[i]) ?? 0n;
     const symbolRaw = okResult(symbols[i]);
     const nameRaw = okResult(names[i]);
@@ -602,7 +604,7 @@ async function recheckPairs(
     if (okResult(approved[i]) !== true) {
       return;
     }
-    const meta = knownNft(pair.token);
+    const meta = knownNft(pair.token, chain);
     const balance = okResult(nftBalances[i]) ?? 0n;
     const symbolRaw = okResult(nftSymbols[i]);
     const nameRaw = okResult(nftNames[i]);
@@ -625,19 +627,25 @@ async function recheckPairs(
   return live;
 }
 
-export async function scanWallet(rawQuery: string): Promise<ScanResult> {
-  const cached = getCachedScan(rawQuery);
+export async function scanWallet(
+  rawQuery: string,
+  chainInput: ChainSlug | SupportedChain = CHAINS.ethereum,
+): Promise<ScanResult> {
+  const chain = typeof chainInput === "string" ? getChain(chainInput) : chainInput;
+  const cached = getCachedScan(chain.slug, rawQuery);
   if (cached) {
     return cached;
   }
 
-  const client = getMainnetClient();
-  const resolved = await resolveWallet(client, rawQuery);
-  const cachedAddr = getCachedScan(resolved.address);
+  const ensClient = getMainnetClient();
+  const client = chain.slug === "ethereum" ? ensClient : getChainClient(chain);
+  const resolved = await resolveWallet(ensClient, rawQuery);
+  const cachedAddr = getCachedScan(chain.slug, resolved.address);
   if (cachedAddr) {
     return cachedAddr;
   }
 
+  const catalog = catalogFor(chain);
   const latest = await client.getBlockNumber();
   const warnings: string[] = [];
   const sources: ScanSources = { logs: false, etherscan: false, probe: false };
@@ -645,7 +653,7 @@ export async function scanWallet(rawQuery: string): Promise<ScanResult> {
   const merged = new Map<string, Pair>();
 
   const [probe, logs, etherscan] = await Promise.all([
-    probeKnownPairs(client, resolved.address).catch((err: unknown) => {
+    probeKnownPairs(client, resolved.address, catalog).catch((err: unknown) => {
       warnings.push(
         `Known-pair probe failed: ${err instanceof Error ? err.message : "rpc"}`,
       );
@@ -662,7 +670,7 @@ export async function scanWallet(rawQuery: string): Promise<ScanResult> {
         calls: 0,
       } satisfies LogScan;
     }),
-    discoverEtherscan(resolved.address).catch(() => ({
+    discoverEtherscan(chain, resolved.address).catch(() => ({
       pairs: new Map<string, Pair>(),
       used: Boolean(process.env.ETHERSCAN_API_KEY?.trim()),
     })),
@@ -689,6 +697,7 @@ export async function scanWallet(rawQuery: string): Promise<ScanResult> {
 
   const rechecked = await recheckPairs(
     client,
+    chain,
     resolved.address,
     [...merged.values()],
   );
@@ -700,7 +709,7 @@ export async function scanWallet(rawQuery: string): Promise<ScanResult> {
         .map((r) => r.pair.token),
     ),
   ];
-  const prices = await fetchUsdPrices(uniqueTokens);
+  const prices = await fetchUsdPrices(uniqueTokens, chain);
 
   const approvals: OpenApproval[] = rechecked.map((row) => {
     const unlimited =
@@ -722,7 +731,7 @@ export async function scanWallet(rawQuery: string): Promise<ScanResult> {
       tokenName: row.name,
       decimals: row.decimals,
       spender: row.pair.spender,
-      spenderLabel: labelSpender(row.pair.spender),
+      spenderLabel: labelSpender(row.pair.spender, chain),
       allowance: row.allowance,
       balance: row.balance,
       movable,
@@ -738,7 +747,9 @@ export async function scanWallet(rawQuery: string): Promise<ScanResult> {
     query: rawQuery.trim(),
     address: resolved.address,
     ens: resolved.ens,
-    chainId: 1,
+    chainId: chain.chainId,
+    chain: chain.slug,
+    chainName: chain.name,
     scannedAt: Date.now(),
     partial,
     earliestBlock: logs.fromBlock != null ? logs.fromBlock.toString() : null,
@@ -750,6 +761,6 @@ export async function scanWallet(rawQuery: string): Promise<ScanResult> {
     warnings,
   };
 
-  setCachedScan(rawQuery, result);
+  setCachedScan(chain.slug, rawQuery, result);
   return result;
 }

@@ -1,12 +1,15 @@
 import type { OpenApproval } from "@/lib/types";
+import { CHAINS } from "@/lib/chains";
 import { formatAllowance, formatUnits, shortAddress } from "@/lib/format";
 import { formatUsdCompact } from "@/lib/headline";
 
-function explorer(address: string): string {
-  return `https://etherscan.io/address/${address}`;
-}
-
-export function ApprovalTable({ approvals }: { approvals: OpenApproval[] }) {
+export function ApprovalTable({
+  approvals,
+  explorerUrl = CHAINS.ethereum.explorer.addressUrl,
+}: {
+  approvals: OpenApproval[];
+  explorerUrl?: (address: string) => string;
+}) {
   if (approvals.length === 0) {
     return (
       <div className="empty">
@@ -32,13 +35,13 @@ export function ApprovalTable({ approvals }: { approvals: OpenApproval[] }) {
           {approvals.map((a) => (
             <tr key={a.id}>
               <td>
-                <a href={explorer(a.token)} target="_blank" rel="noreferrer">
+                <a href={explorerUrl(a.token)} target="_blank" rel="noreferrer">
                   {a.tokenSymbol}
                 </a>
                 <div className="muted">{a.tokenName}</div>
               </td>
               <td>
-                <a href={explorer(a.spender)} target="_blank" rel="noreferrer">
+                <a href={explorerUrl(a.spender)} target="_blank" rel="noreferrer">
                   {a.spenderLabel}
                 </a>
                 <div className="muted">{shortAddress(a.spender, 5)}</div>

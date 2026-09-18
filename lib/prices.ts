@@ -1,7 +1,6 @@
-export type PriceMap = Map<string, number>;
+import type { SupportedChain } from "./chains";
 
-const COINGECKO =
-  "https://api.coingecko.com/api/v3/simple/token_price/ethereum";
+export type PriceMap = Map<string, number>;
 
 /**
  * Live USD prices from CoinGecko's public API (1 contract per request).
@@ -9,6 +8,7 @@ const COINGECKO =
  */
 export async function fetchUsdPrices(
   tokenAddresses: readonly string[],
+  chain: SupportedChain,
   timeoutMs = 7000,
 ): Promise<PriceMap> {
   const unique = [
@@ -27,7 +27,7 @@ export async function fetchUsdPrices(
       return;
     }
     try {
-      const url = `${COINGECKO}?contract_addresses=${address}&vs_currencies=usd`;
+      const url = `https://api.coingecko.com/api/v3/simple/token_price/${chain.coingeckoPlatform}?contract_addresses=${address}&vs_currencies=usd`;
       const res = await fetch(url, {
         signal: controller.signal,
         headers: {

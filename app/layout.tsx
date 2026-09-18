@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     template: "%s · Blast Radius",
   },
   description:
-    "Paste a wallet. See which ERC-20 approvals can still move your tokens. Read-only.",
+    "Paste a wallet. See which ERC-20 approvals can still move your tokens on Ethereum, Base, and Arbitrum. Read-only.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
 };
 

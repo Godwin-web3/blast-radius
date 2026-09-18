@@ -5,9 +5,11 @@ import { useState } from "react";
 export function ShareBar({
   path,
   filename,
+  revokeUrl = "https://revoke.cash",
 }: {
   path: string;
   filename: string;
+  revokeUrl?: string;
 }) {
   const [copied, setCopied] = useState(false);
   const [downloading, setDownloading] = useState(false);
@@ -47,7 +49,7 @@ export function ShareBar({
       <button type="button" onClick={() => void downloadCard()}>
         {downloading ? "Saving…" : "Download card"}
       </button>
-      <a className="btn" href="https://revoke.cash" target="_blank" rel="noreferrer">
+      <a className="btn" href={revokeUrl} target="_blank" rel="noreferrer">
         Revoke on revoke.cash
       </a>
     </div>

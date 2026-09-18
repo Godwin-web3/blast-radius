@@ -1,7 +1,7 @@
 import { isAddress, getAddress, type Address } from "viem";
 import { normalize } from "viem/ens";
 import { looksLikeEns } from "./format";
-import type { MainnetClient } from "./client";
+import type { ChainClient } from "./client";
 
 export type ResolvedWallet = {
   query: string;
@@ -19,7 +19,7 @@ export class ResolveError extends Error {
 }
 
 export async function resolveWallet(
-  client: MainnetClient,
+  client: ChainClient,
   raw: string,
 ): Promise<ResolvedWallet> {
   const query = raw.trim();

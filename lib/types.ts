@@ -1,3 +1,5 @@
+import type { ChainId, ChainSlug } from "./chains";
+
 export type ApprovalKind = "erc20" | "erc721-for-all";
 
 export type RankableApproval = {
@@ -42,7 +44,9 @@ export type ScanResult = {
   query: string;
   address: string;
   ens: string | null;
-  chainId: 1;
+  chainId: ChainId;
+  chain: ChainSlug;
+  chainName: string;
   scannedAt: number;
   partial: boolean;
   earliestBlock: string | null;

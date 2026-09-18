@@ -1,37 +1,75 @@
 "use client";
 
+import { CHAIN_LIST, type ChainSlug, walletPath } from "@/lib/chains";
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
-export function SearchForm({ initial = "" }: { initial?: string }) {
+export function SearchForm({
+  initial = "",
+  chain = "ethereum",
+}: {
+  initial?: string;
+  chain?: ChainSlug;
+}) {
   const router = useRouter();
   const [value, setValue] = useState(initial);
+  const [selected, setSelected] = useState<ChainSlug>(chain);
   const [busy, setBusy] = useState(false);
 
-  function onSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const q = value.trim();
+  useEffect(() => {
+    setValue(initial);
+    setSelected(chain);
+    setBusy(false);
+  }, [initial, chain]);
+
+  function go(nextChain: ChainSlug, query: string) {
+    const q = query.trim();
     if (!q) {
+      setSelected(nextChain);
       return;
     }
     setBusy(true);
-    router.push(`/w/${encodeURIComponent(q)}`);
+    router.push(walletPath(nextChain, q));
+  }
+
+  function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    go(selected, value);
   }
 
   return (
-    <form className="search" onSubmit={onSubmit}>
-      <input
-        name="wallet"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        placeholder="Paste 0x… or vitalik.eth"
-        autoComplete="off"
-        spellCheck={false}
-        aria-label="Wallet address or ENS name"
-      />
-      <button type="submit" disabled={busy}>
-        {busy ? "Scanning" : "Scan"}
-      </button>
-    </form>
+    <div className="search-stack">
+      <div className="chain-switch" role="radiogroup" aria-label="Chain">
+        {CHAIN_LIST.map((c) => {
+          const pressed = selected === c.slug;
+          return (
+            <button
+              key={c.slug}
+              type="button"
+              role="radio"
+              aria-checked={pressed}
+              className={pressed ? "is-on" : undefined}
+              onClick={() => go(c.slug, value)}
+            >
+              {c.shortName}
+            </button>
+          );
+        })}
+      </div>
+      <form className="search" onSubmit={onSubmit}>
+        <input
+          name="wallet"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          placeholder="Paste 0x… or vitalik.eth"
+          autoComplete="off"
+          spellCheck={false}
+          aria-label="Wallet address or ENS name"
+        />
+        <button type="submit" disabled={busy}>
+          {busy ? "Scanning" : "Scan"}
+        </button>
+      </form>
+    </div>
   );
 }

@@ -1,17 +1,14 @@
 import { ImageResponse } from "next/og";
 import { getCachedScan } from "@/lib/cache";
+import { ChainPathError, parseWalletPath } from "@/lib/chains";
 import { POSTER_QUOTE } from "@/lib/headline";
 import { scanWallet } from "@/lib/scan";
 import type { ScanResult } from "@/lib/types";
 
-export const runtime = "nodejs";
-export const alt = "Blast Radius share card";
-export const size = { width: 1200, height: 630 };
-export const contentType = "image/png";
-export const maxDuration = 30;
+export const OG_SIZE = { width: 1200, height: 630 };
 
-async function safeScan(query: string): Promise<ScanResult | null> {
-  const cached = getCachedScan(query);
+async function safeScan(query: string, chainSlug: ScanResult["chain"]): Promise<ScanResult | null> {
+  const cached = getCachedScan(chainSlug, query);
   if (cached) {
     return cached;
   }
@@ -19,7 +16,7 @@ async function safeScan(query: string): Promise<ScanResult | null> {
     const timeout = new Promise<null>((resolve) => {
       setTimeout(() => resolve(null), 8000);
     });
-    return await Promise.race([scanWallet(query), timeout]);
+    return await Promise.race([scanWallet(query, chainSlug), timeout]);
   } catch {
     return null;
   }
@@ -36,14 +33,27 @@ function topRows(result: ScanResult | null): Array<{ token: string; spender: str
   }));
 }
 
-export default async function OgImage({
-  params,
-}: {
-  params: Promise<{ address: string }>;
-}) {
-  const { address } = await params;
-  const query = decodeURIComponent(address);
-  const result = await safeScan(query);
+export async function renderOgCard(segments: readonly string[]): Promise<ImageResponse> {
+  let chainKicker = "ETHEREUM";
+  let query = segments.join("/");
+  let result: ScanResult | null = null;
+
+  try {
+    const parsed = parseWalletPath(segments);
+    chainKicker = parsed.chain.posterKicker;
+    query = parsed.query || parsed.chain.name;
+    if (parsed.query) {
+      result = await safeScan(parsed.query, parsed.chain.slug);
+      if (result) {
+        chainKicker = parsed.chain.posterKicker;
+      }
+    }
+  } catch (err) {
+    if (!(err instanceof ChainPathError)) {
+      query = segments[segments.length - 1] ?? query;
+    }
+  }
+
   const title = result?.headline.title ?? "BLAST RADIUS";
   const ident = result?.ens ?? result?.address ?? query;
   const hex = result?.address && result.ens ? result.address : null;
@@ -98,7 +108,7 @@ export default async function OgImage({
               display: "flex",
             }}
           >
-            BLAST RADIUS · ETHEREUM
+            BLAST RADIUS · {chainKicker}
           </div>
           <div
             style={{
@@ -168,6 +178,6 @@ export default async function OgImage({
         </div>
       </div>
     ),
-    { ...size },
+    { ...OG_SIZE },
   );
 }
