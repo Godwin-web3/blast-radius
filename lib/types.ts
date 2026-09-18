@@ -1,6 +1,18 @@
-import type { ChainId, ChainSlug } from "./chains";
+import type { ChainFamily, ChainId, ChainSlug } from "./chains";
 
-export type ApprovalKind = "erc20" | "erc721-for-all";
+export type ApprovalKind =
+  | "erc20"
+  | "erc721-for-all"
+  | "spl-delegate"
+  | "spl-permanent-delegate";
+
+export function isFungibleKind(kind: ApprovalKind): boolean {
+  return kind === "erc20" || kind === "spl-delegate" || kind === "spl-permanent-delegate";
+}
+
+export function isSplKind(kind: ApprovalKind): boolean {
+  return kind === "spl-delegate" || kind === "spl-permanent-delegate";
+}
 
 export type RankableApproval = {
   id: string;
@@ -20,6 +32,10 @@ export type OpenApproval = RankableApproval & {
   spenderLabel: string;
   allowance: bigint;
   usdPrice: number | null;
+  /** Solana: token account is frozen (classic delegate cannot transfer until thawed). */
+  frozen?: boolean;
+  /** Solana: token-account pubkey (or mint for mint-level permanent delegate). */
+  tokenAccount?: string;
 };
 
 export type Headline = {
@@ -38,6 +54,7 @@ export type ScanSources = {
   logs: boolean;
   etherscan: boolean;
   probe: boolean;
+  tokenAccounts: boolean;
 };
 
 export type ScanResult = {
@@ -47,6 +64,7 @@ export type ScanResult = {
   chainId: ChainId;
   chain: ChainSlug;
   chainName: string;
+  family: ChainFamily;
   scannedAt: number;
   partial: boolean;
   earliestBlock: string | null;

@@ -37,6 +37,8 @@ export function SearchForm({
     go(selected, value);
   }
 
+  const solana = selected === "solana";
+
   return (
     <div className="search-stack">
       <div className="chain-switch" role="radiogroup" aria-label="Chain">
@@ -61,10 +63,10 @@ export function SearchForm({
           name="wallet"
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          placeholder="Paste 0x… or vitalik.eth"
+          placeholder={solana ? "Paste Solana base58 address" : "Paste 0x… or vitalik.eth"}
           autoComplete="off"
           spellCheck={false}
-          aria-label="Wallet address or ENS name"
+          aria-label={solana ? "Solana wallet address" : "Wallet address or ENS name"}
         />
         <button type="submit" disabled={busy}>
           {busy ? "Scanning" : "Scan"}

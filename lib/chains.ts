@@ -1,30 +1,63 @@
 import { arbitrum, base, mainnet, type Chain } from "viem/chains";
 
-export type ChainSlug = "ethereum" | "base" | "arbitrum";
+export type EvmChainSlug = "ethereum" | "base" | "arbitrum";
+export type ChainSlug = EvmChainSlug | "solana";
+export type ChainFamily = "evm" | "solana";
 
-export type ChainId = 1 | 8453 | 42161;
+export type EvmChainId = 1 | 8453 | 42161;
+/** EVM numeric ids, or `"solana"` for mainnet-beta (not an EVM chainid). */
+export type ChainId = EvmChainId | "solana";
 
-export type SupportedChain = {
+type ChainCommon = {
   slug: ChainSlug;
-  chainId: ChainId;
-  /** Etherscan v2 `chainid` query param — one API key covers all three. */
-  etherscanChainId: `${ChainId}`;
   name: string;
   shortName: string;
   posterKicker: string;
-  nativeSymbol: "ETH";
+  nativeSymbol: "ETH" | "SOL";
   explorer: {
     name: string;
     addressUrl: (address: string) => string;
   };
-  coingeckoPlatform: "ethereum" | "base" | "arbitrum-one";
-  viemChain: Chain;
   rpcEnv: string;
   publicRpcs: readonly string[];
-  revokeCashUrl: (address: string) => string;
+  /** External revoke / inspect link. EVM → revoke.cash; Solana → Solscan. */
+  revokeUrl: (address: string) => string;
+  revokeLabel: string;
+  walletHint: string;
+  exposureNoun: "allowance" | "delegate";
+  exposureNounPlural: "allowances" | "delegates";
+  counterparty: "spender" | "delegate";
 };
 
-const ETHEREUM: SupportedChain = {
+export type EvmChain = ChainCommon & {
+  family: "evm";
+  slug: EvmChainSlug;
+  chainId: EvmChainId;
+  /** Etherscan v2 `chainid` query param — one API key covers all three EVM nets. */
+  etherscanChainId: `${EvmChainId}`;
+  nativeSymbol: "ETH";
+  coingeckoPlatform: "ethereum" | "base" | "arbitrum-one";
+  viemChain: Chain;
+  exposureNoun: "allowance";
+  exposureNounPlural: "allowances";
+  counterparty: "spender";
+};
+
+export type SolanaChain = ChainCommon & {
+  family: "solana";
+  slug: "solana";
+  chainId: "solana";
+  nativeSymbol: "SOL";
+  coingeckoPlatform: "solana";
+  exposureNoun: "delegate";
+  exposureNounPlural: "delegates";
+  counterparty: "delegate";
+};
+
+export type SupportedChain = EvmChain | SolanaChain;
+
+const ETHEREUM: EvmChain = {
+  family: "evm",
   slug: "ethereum",
   chainId: 1,
   etherscanChainId: "1",
@@ -47,10 +80,16 @@ const ETHEREUM: SupportedChain = {
     "https://cloudflare-eth.com",
     "https://eth.drpc.org",
   ],
-  revokeCashUrl: (address) => `https://revoke.cash/address/${address}?chainId=1`,
+  revokeUrl: (address) => `https://revoke.cash/address/${address}?chainId=1`,
+  revokeLabel: "Revoke on revoke.cash",
+  walletHint: "Paste a 0x address or ENS name.",
+  exposureNoun: "allowance",
+  exposureNounPlural: "allowances",
+  counterparty: "spender",
 };
 
-const BASE: SupportedChain = {
+const BASE: EvmChain = {
+  family: "evm",
   slug: "base",
   chainId: 8453,
   etherscanChainId: "8453",
@@ -73,10 +112,16 @@ const BASE: SupportedChain = {
     "https://base.drpc.org",
     "https://rpc.ankr.com/base",
   ],
-  revokeCashUrl: (address) => `https://revoke.cash/address/${address}?chainId=8453`,
+  revokeUrl: (address) => `https://revoke.cash/address/${address}?chainId=8453`,
+  revokeLabel: "Revoke on revoke.cash",
+  walletHint: "Paste a 0x address or ENS name.",
+  exposureNoun: "allowance",
+  exposureNounPlural: "allowances",
+  counterparty: "spender",
 };
 
-const ARBITRUM: SupportedChain = {
+const ARBITRUM: EvmChain = {
+  family: "evm",
   slug: "arbitrum",
   chainId: 42161,
   etherscanChainId: "42161",
@@ -99,20 +144,58 @@ const ARBITRUM: SupportedChain = {
     "https://arbitrum.drpc.org",
     "https://rpc.ankr.com/arbitrum",
   ],
-  revokeCashUrl: (address) => `https://revoke.cash/address/${address}?chainId=42161`,
+  revokeUrl: (address) => `https://revoke.cash/address/${address}?chainId=42161`,
+  revokeLabel: "Revoke on revoke.cash",
+  walletHint: "Paste a 0x address or ENS name.",
+  exposureNoun: "allowance",
+  exposureNounPlural: "allowances",
+  counterparty: "spender",
 };
 
-export const CHAINS: Record<ChainSlug, SupportedChain> = {
+const SOLANA: SolanaChain = {
+  family: "solana",
+  slug: "solana",
+  chainId: "solana",
+  name: "Solana",
+  shortName: "SOL",
+  posterKicker: "SOLANA",
+  nativeSymbol: "SOL",
+  explorer: {
+    name: "Solscan",
+    addressUrl: (address) => `https://solscan.io/account/${address}`,
+  },
+  coingeckoPlatform: "solana",
+  rpcEnv: "SOLANA_RPC",
+  publicRpcs: [
+    "https://solana-rpc.publicnode.com",
+    "https://api.mainnet-beta.solana.com",
+    "https://rpc.ankr.com/solana",
+    "https://1rpc.io/solana",
+    "https://solana.drpc.org",
+  ],
+  revokeUrl: (address) => `https://solscan.io/account/${address}#portfolio`,
+  revokeLabel: "View on Solscan",
+  walletHint: "Paste a Solana base58 address.",
+  exposureNoun: "delegate",
+  exposureNounPlural: "delegates",
+  counterparty: "delegate",
+};
+
+export const CHAINS = {
   ethereum: ETHEREUM,
   base: BASE,
   arbitrum: ARBITRUM,
-};
+  solana: SOLANA,
+} as const satisfies Record<ChainSlug, SupportedChain>;
 
 export const CHAIN_LIST: readonly SupportedChain[] = [
   ETHEREUM,
   BASE,
   ARBITRUM,
+  SOLANA,
 ];
+
+export const EVM_CHAINS: readonly EvmChain[] = [ETHEREUM, BASE, ARBITRUM];
 
 export const DEFAULT_CHAIN_SLUG: ChainSlug = "ethereum";
 
@@ -126,7 +209,9 @@ const SLUG_ALIASES: Record<string, ChainSlug> = {
   arb: "arbitrum",
   "arbitrum-one": "arbitrum",
   arbitrumone: "arbitrum",
-  "arbitrum_one": "arbitrum",
+  arbitrum_one: "arbitrum",
+  solana: "solana",
+  sol: "solana",
 };
 
 export function parseChainSlug(raw: string | null | undefined): ChainSlug | null {
@@ -137,6 +222,14 @@ export function parseChainSlug(raw: string | null | undefined): ChainSlug | null
   return SLUG_ALIASES[key] ?? null;
 }
 
+export function isEvmChain(chain: SupportedChain): chain is EvmChain {
+  return chain.family === "evm";
+}
+
+export function isSolanaChain(chain: SupportedChain): chain is SolanaChain {
+  return chain.family === "solana";
+}
+
 export function getChain(slug: ChainSlug | string | null | undefined): SupportedChain {
   const parsed = parseChainSlug(slug ?? DEFAULT_CHAIN_SLUG);
   if (!parsed) {
@@ -145,7 +238,7 @@ export function getChain(slug: ChainSlug | string | null | undefined): Supported
   return CHAINS[parsed];
 }
 
-export function getChainById(chainId: number): SupportedChain | null {
+export function getChainById(chainId: number | "solana"): SupportedChain | null {
   return CHAIN_LIST.find((c) => c.chainId === chainId) ?? null;
 }
 
@@ -176,7 +269,7 @@ function decodeSegment(segment: string): string {
  *   /w/[address]                 → Ethereum (back-compat)
  *   /w/[chain]/[address]         → explicit chain (canonical)
  *
- * A lone chain slug (`/w/base`) is a missing-wallet error, not an address.
+ * A lone chain slug (`/w/base`, `/w/solana`) is a missing-wallet error, not an address.
  */
 export function parseWalletPath(segments: readonly string[]): WalletPath {
   if (segments.length === 0) {
@@ -198,12 +291,12 @@ export function parseWalletPath(segments: readonly string[]): WalletPath {
     if (!slug) {
       throw new ChainPathError(
         "unknown-chain",
-        `Unknown chain "${segments[0]}". Use ethereum, base, or arbitrum.`,
+        `Unknown chain "${segments[0]}". Use ethereum, base, arbitrum, or solana.`,
       );
     }
     const query = decodeSegment(segments[1] ?? "").trim();
     if (!query) {
-      throw new ChainPathError("missing-wallet", "Paste a 0x address or ENS name.");
+      throw new ChainPathError("missing-wallet", CHAINS[slug].walletHint);
     }
     return { chain: CHAINS[slug], query };
   }
@@ -216,11 +309,27 @@ export function walletPath(chain: ChainSlug | SupportedChain, query: string): st
   return `/w/${slug}/${encodeURIComponent(query.trim())}`;
 }
 
+function heliusRpcUrl(): string | null {
+  const key = process.env.HELIUS_API_KEY?.trim();
+  if (!key) {
+    return null;
+  }
+  return `https://mainnet.helius-rpc.com/?api-key=${key}`;
+}
+
 export function rpcUrlsFor(chain: SupportedChain): string[] {
   const custom = process.env[chain.rpcEnv]?.trim();
-  const publics = [...chain.publicRpcs];
-  if (!custom) {
-    return publics;
+  const extras: string[] = [];
+  if (chain.family === "solana") {
+    const helius = heliusRpcUrl();
+    if (helius) {
+      extras.push(helius);
+    }
   }
-  return [custom, ...publics.filter((u) => u !== custom)];
+  const publics = [...extras, ...chain.publicRpcs];
+  const uniquePublics = publics.filter((url, i) => publics.indexOf(url) === i);
+  if (!custom) {
+    return uniquePublics;
+  }
+  return [custom, ...uniquePublics.filter((u) => u !== custom)];
 }

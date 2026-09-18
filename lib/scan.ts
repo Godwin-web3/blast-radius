@@ -11,6 +11,7 @@ import {
   CHAINS,
   getChain,
   type ChainSlug,
+  type EvmChain,
   type SupportedChain,
 } from "./chains";
 import { ETHERSCAN_V2, getChainClient, getMainnetClient, type ChainClient } from "./client";
@@ -20,6 +21,7 @@ import { catalogFor, knownNft, knownToken, labelSpender, type KnownCatalog } fro
 import { fetchUsdPrices, usdFromAtomic } from "./prices";
 import { approvalId, rankApprovals } from "./ranking";
 import { resolveWallet } from "./resolve";
+import { scanSolanaWallet } from "./solana/scan";
 import type { OpenApproval, ScanResult, ScanSources } from "./types";
 import { isUnlimitedAllowance, movableAmount } from "./unlimited";
 
@@ -275,7 +277,7 @@ type EtherscanLog = {
 };
 
 async function etherscanJson(
-  chain: SupportedChain,
+  chain: EvmChain,
   params: Record<string, string>,
 ): Promise<unknown> {
   const key = process.env.ETHERSCAN_API_KEY?.trim();
@@ -329,7 +331,7 @@ function ingestEtherscanLogs(
 }
 
 async function discoverEtherscan(
-  chain: SupportedChain,
+  chain: EvmChain,
   owner: Address,
 ): Promise<{ pairs: Map<string, Pair>; used: boolean }> {
   const key = process.env.ETHERSCAN_API_KEY?.trim();
@@ -494,7 +496,7 @@ type Rechecked = {
 
 async function recheckPairs(
   client: ChainClient,
-  chain: SupportedChain,
+  chain: EvmChain,
   owner: Address,
   pairs: Pair[],
 ): Promise<Rechecked[]> {
@@ -632,6 +634,16 @@ export async function scanWallet(
   chainInput: ChainSlug | SupportedChain = CHAINS.ethereum,
 ): Promise<ScanResult> {
   const chain = typeof chainInput === "string" ? getChain(chainInput) : chainInput;
+  if (chain.family === "solana") {
+    return scanSolanaWallet(rawQuery, chain);
+  }
+  return scanEvmWallet(rawQuery, chain);
+}
+
+async function scanEvmWallet(
+  rawQuery: string,
+  chain: EvmChain,
+): Promise<ScanResult> {
   const cached = getCachedScan(chain.slug, rawQuery);
   if (cached) {
     return cached;
@@ -648,7 +660,7 @@ export async function scanWallet(
   const catalog = catalogFor(chain);
   const latest = await client.getBlockNumber();
   const warnings: string[] = [];
-  const sources: ScanSources = { logs: false, etherscan: false, probe: false };
+  const sources: ScanSources = { logs: false, etherscan: false, probe: false, tokenAccounts: false };
 
   const merged = new Map<string, Pair>();
 
@@ -750,13 +762,14 @@ export async function scanWallet(
     chainId: chain.chainId,
     chain: chain.slug,
     chainName: chain.name,
+    family: "evm",
     scannedAt: Date.now(),
     partial,
     earliestBlock: logs.fromBlock != null ? logs.fromBlock.toString() : null,
     latestBlock: latest.toString(),
     fromBlock: logs.fromBlock != null ? logs.fromBlock.toString() : null,
     approvals: ranked,
-    headline: buildHeadline(ranked),
+    headline: buildHeadline(ranked, { noun: "allowance" }),
     sources,
     warnings,
   };

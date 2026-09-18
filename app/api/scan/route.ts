@@ -16,7 +16,7 @@ export async function GET(request: Request) {
   }
   if (chainRaw && !parseChainSlug(chainRaw)) {
     return NextResponse.json(
-      { error: `Unknown chain "${chainRaw}". Use ethereum, base, or arbitrum.` },
+      { error: `Unknown chain "${chainRaw}". Use ethereum, base, arbitrum, or solana.` },
       { status: 400 },
     );
   }

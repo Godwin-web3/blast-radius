@@ -1,7 +1,8 @@
 import { ImageResponse } from "next/og";
 import { getCachedScan } from "@/lib/cache";
 import { ChainPathError, parseWalletPath } from "@/lib/chains";
-import { POSTER_QUOTE } from "@/lib/headline";
+import { posterQuote } from "@/lib/headline";
+import { exposureTag } from "@/lib/format";
 import { scanWallet } from "@/lib/scan";
 import type { ScanResult } from "@/lib/types";
 
@@ -29,7 +30,7 @@ function topRows(result: ScanResult | null): Array<{ token: string; spender: str
   return result.approvals.slice(0, 3).map((a) => ({
     token: a.tokenSymbol,
     spender: a.spenderLabel,
-    tag: a.unlimited || a.kind === "erc721-for-all" ? "UNLIMITED" : "LIMITED",
+    tag: exposureTag(a),
   }));
 }
 
@@ -37,15 +38,18 @@ export async function renderOgCard(segments: readonly string[]): Promise<ImageRe
   let chainKicker = "ETHEREUM";
   let query = segments.join("/");
   let result: ScanResult | null = null;
+  let quote = posterQuote("allowance");
 
   try {
     const parsed = parseWalletPath(segments);
     chainKicker = parsed.chain.posterKicker;
     query = parsed.query || parsed.chain.name;
+    quote = posterQuote(parsed.chain.family === "solana" ? "delegate" : "allowance");
     if (parsed.query) {
       result = await safeScan(parsed.query, parsed.chain.slug);
       if (result) {
         chainKicker = parsed.chain.posterKicker;
+        quote = posterQuote(result.family === "solana" ? "delegate" : "allowance");
       }
     }
   } catch (err) {
@@ -133,13 +137,15 @@ export async function renderOgCard(segments: readonly string[]): Promise<ImageRe
               maxWidth: 820,
             }}
           >
-            “{POSTER_QUOTE}”
+            “{quote}”
           </div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {rows.length === 0 ? (
             <div style={{ display: "flex", fontSize: 22, color: "#8f8778" }}>
-              Live scan for open spenders — no fabricated dollars.
+              {result?.family === "solana"
+                ? "Live scan for open delegates — no fabricated dollars."
+                : "Live scan for open spenders — no fabricated dollars."}
             </div>
           ) : (
             rows.map((row) => (

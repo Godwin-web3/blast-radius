@@ -1,5 +1,5 @@
 import { getAddress } from "viem";
-import { CHAINS, type ChainId, type SupportedChain } from "./chains";
+import { CHAINS, type EvmChain, type EvmChainId } from "./chains";
 
 export type KnownToken = {
   address: `0x${string}`;
@@ -267,7 +267,7 @@ function uniqueByAddress<T extends { address: `0x${string}` }>(items: readonly T
   return out;
 }
 
-export const CATALOGS: Record<ChainId, KnownCatalog> = {
+export const CATALOGS: Record<EvmChainId, KnownCatalog> = {
   1: {
     tokens: ETHEREUM_TOKENS,
     spenders: ETHEREUM_SPENDERS,
@@ -316,34 +316,34 @@ function buildLookup(catalog: KnownCatalog): Lookup {
   return { spenders, tokens, nfts };
 }
 
-const LOOKUPS: Record<ChainId, Lookup> = {
+const LOOKUPS: Record<EvmChainId, Lookup> = {
   1: buildLookup(CATALOGS[1]),
   8453: buildLookup(CATALOGS[8453]),
   42161: buildLookup(CATALOGS[42161]),
 };
 
-function chainIdOf(chain: SupportedChain | ChainId): ChainId {
+function chainIdOf(chain: EvmChain | EvmChainId): EvmChainId {
   return typeof chain === "number" ? chain : chain.chainId;
 }
 
-export function catalogFor(chain: SupportedChain | ChainId): KnownCatalog {
+export function catalogFor(chain: EvmChain | EvmChainId): KnownCatalog {
   return CATALOGS[chainIdOf(chain)];
 }
 
-export function labelSpender(address: string, chain: SupportedChain | ChainId = CHAINS.ethereum): string {
+export function labelSpender(address: string, chain: EvmChain | EvmChainId = CHAINS.ethereum): string {
   return LOOKUPS[chainIdOf(chain)].spenders.get(address.toLowerCase()) ?? shortLabel(address);
 }
 
 export function knownToken(
   address: string,
-  chain: SupportedChain | ChainId = CHAINS.ethereum,
+  chain: EvmChain | EvmChainId = CHAINS.ethereum,
 ): KnownToken | undefined {
   return LOOKUPS[chainIdOf(chain)].tokens.get(address.toLowerCase());
 }
 
 export function knownNft(
   address: string,
-  chain: SupportedChain | ChainId = CHAINS.ethereum,
+  chain: EvmChain | EvmChainId = CHAINS.ethereum,
 ): KnownNft | undefined {
   return LOOKUPS[chainIdOf(chain)].nfts.get(address.toLowerCase());
 }

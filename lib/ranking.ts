@@ -23,9 +23,10 @@ export function normalizedAmount(amount: bigint, decimals: number): number {
 
 /**
  * Higher score = more blast radius.
- * Unlimited live ERC-20 (tokens sitting behind max allowance) ranks first,
- * then operator-wide NFT approvals, then latent unlimited, then limited
- * by real USD if we have it — never by a guessed price.
+ * Unlimited live ERC-20 / SPL delegates (tokens sitting behind max
+ * allowance or u64::MAX) ranks first, then operator-wide NFT approvals,
+ * then latent unlimited, then limited by real USD if we have it — never
+ * by a guessed price.
  */
 export function riskScore(approval: RankableApproval): number {
   if (approval.kind === "erc721-for-all") {

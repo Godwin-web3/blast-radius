@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "license": "MIT",
-  "description": "Paste a wallet. See which ERC-20 approvals can still move your tokens.",
+  "description": "Paste a wallet. See which ERC-20 allowances or Solana token-account delegates can still move your tokens.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

@@ -13,14 +13,16 @@ export async function walletMetadata(segments: readonly string[]): Promise<Metad
   try {
     const parsed = parseWalletPath(segments);
     const q = parsed.query || parsed.chain.slug;
+    const noun = parsed.chain.exposureNounPlural;
     return {
       title: `${q} · ${parsed.chain.name}`,
-      description: `Open ${parsed.chain.name} approvals still movable for ${q}. Still movable if these spenders turn hostile.`,
+      description: `Open ${parsed.chain.name} ${noun} still movable for ${q}. Still movable if these ${parsed.chain.counterparty}s turn hostile.`,
     };
   } catch {
     return {
       title: "Blast Radius",
-      description: "Paste a wallet. See which ERC-20 approvals can still move your tokens.",
+      description:
+        "Paste a wallet. See which ERC-20 allowances or Solana token-account delegates can still move your tokens. Read-only.",
     };
   }
 }
@@ -33,7 +35,7 @@ export async function WalletScanPage({ segments }: { segments: readonly string[]
   try {
     parsed = parseWalletPath(segments);
     if (!parsed.query) {
-      error = "Paste a 0x address or ENS name.";
+      error = parsed.chain.walletHint;
     } else {
       result = await scanWallet(parsed.query, parsed.chain);
     }
@@ -76,21 +78,37 @@ export async function WalletScanPage({ segments }: { segments: readonly string[]
         <>
           {result.partial ? (
             <div className="banner" role="status">
-              Partial {result.chainName} history. Public RPCs often cannot return
-              every Approval log back to genesis
-              {result.fromBlock
-                ? ` (this pass covered blocks ${result.fromBlock}–${result.latestBlock})`
-                : ""}
-              . Rows below are live <code>allowance</code> / <code>balanceOf</code>{" "}
-              re-checks on {result.chainName} — older spenders on this chain may
-              still be missing.
+              {result.family === "solana" ? (
+                <>
+                  Partial Solana scan. Public RPC could not return every token account
+                  {result.latestBlock !== "unknown" ? ` (slot ${result.latestBlock})` : ""}
+                  . Rows below are live <code>delegate</code> / <code>delegatedAmount</code>{" "}
+                  reads — missing accounts are <em>unknown</em>, not safe.
+                </>
+              ) : (
+                <>
+                  Partial {result.chainName} history. Public RPCs often cannot return
+                  every Approval log back to genesis
+                  {result.fromBlock
+                    ? ` (this pass covered blocks ${result.fromBlock}–${result.latestBlock})`
+                    : ""}
+                  . Rows below are live <code>allowance</code> / <code>balanceOf</code>{" "}
+                  re-checks on {result.chainName} — older spenders on this chain may
+                  still be missing.
+                </>
+              )}
             </div>
           ) : null}
           <Poster result={result} path={sharePath} />
-          <BlastMap address={result.address} approvals={result.approvals} />
+          <BlastMap
+            address={result.address}
+            approvals={result.approvals}
+            family={result.family}
+          />
           <ApprovalTable
             approvals={result.approvals}
             explorerUrl={CHAINS[result.chain].explorer.addressUrl}
+            family={result.family}
           />
           {!result.headline.hasUsd && result.approvals.some((a) => a.movable > 0n) ? (
             <p className="muted" style={{ marginTop: 16 }}>
@@ -101,7 +119,7 @@ export async function WalletScanPage({ segments }: { segments: readonly string[]
         </>
       ) : null}
 
-      <SiteFooter />
+      <SiteFooter family={result?.family ?? parsed?.chain.family ?? "evm"} />
     </div>
   );
 }
