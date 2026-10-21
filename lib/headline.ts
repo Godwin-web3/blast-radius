@@ -43,6 +43,24 @@ export function buildHeadline(
   approvals: readonly OpenApproval[],
   options: { noun?: HeadlineNoun } = {},
 ): Headline {
+  const core = buildHeadlineCore(approvals, options);
+  if (!approvals.some((a) => a.control)) {
+    return core;
+  }
+  const weak = approvals.filter((a) => a.control && (a.control.grade === "D" || a.control.grade === "F"));
+  const priced = weak.filter((a) => a.usdMovable != null && a.kind !== "permit2");
+  const weakUsd = priced.reduce((sum, a) => sum + (a.usdMovable ?? 0), 0);
+  return {
+    ...core,
+    weakControlCount: weak.length,
+    weakControlUsd: priced.length > 0 ? roundUsd(weakUsd) : null,
+  };
+}
+
+function buildHeadlineCore(
+  approvals: readonly OpenApproval[],
+  options: { noun?: HeadlineNoun } = {},
+): Headline {
   const noun = options.noun ?? inferHeadlineNoun(approvals);
   const openCount = approvals.length;
   const unlimitedCount = approvals.filter((a) => a.unlimited).length;
@@ -53,7 +71,9 @@ export function buildHeadline(
   let anyPrice = false;
 
   for (const a of approvals) {
-    if (!isFungibleKind(a.kind)) {
+    // Permit2 sub-allowances pull the same tokens the outer Permit2
+    // approval already counts, so they never add to the total.
+    if (!isFungibleKind(a.kind) || a.kind === "permit2") {
       continue;
     }
     if (a.usdMovable != null) {

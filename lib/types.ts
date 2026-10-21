@@ -1,13 +1,15 @@
 import type { ChainFamily, ChainId, ChainSlug } from "./chains";
+import type { SpenderControl } from "./control";
 
 export type ApprovalKind =
   | "erc20"
   | "erc721-for-all"
+  | "permit2"
   | "spl-delegate"
   | "spl-permanent-delegate";
 
 export function isFungibleKind(kind: ApprovalKind): boolean {
-  return kind === "erc20" || kind === "spl-delegate" || kind === "spl-permanent-delegate";
+  return kind === "erc20" || kind === "permit2" || kind === "spl-delegate" || kind === "spl-permanent-delegate";
 }
 
 export function isSplKind(kind: ApprovalKind): boolean {
@@ -22,6 +24,8 @@ export type RankableApproval = {
   balance: bigint;
   decimals: number;
   usdMovable: number | null;
+  /** Who controls the spender. Absent on Solana or when the profile timed out. */
+  control?: SpenderControl;
 };
 
 export type OpenApproval = RankableApproval & {
@@ -36,6 +40,8 @@ export type OpenApproval = RankableApproval & {
   frozen?: boolean;
   /** Solana: token-account pubkey (or mint for mint-level permanent delegate). */
   tokenAccount?: string;
+  /** Permit2 sub-allowance: unix seconds when it expires. */
+  expiresAt?: number;
 };
 
 export type Headline = {
@@ -48,6 +54,10 @@ export type Headline = {
   unlimitedCount: number;
   pricedCount: number;
   unpricedCount: number;
+  /** Approvals whose spender grades D or F (one key / weak multisig / EOA away). */
+  weakControlCount?: number;
+  /** Live USD sitting behind those weak-control spenders, when priced. */
+  weakControlUsd?: number | null;
 };
 
 export type ScanSources = {

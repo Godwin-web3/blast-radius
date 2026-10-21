@@ -196,6 +196,6 @@ describe("known spenders per chain", () => {
     expect(labelSpender("0xc873fEcbd354f5A56E00E710B90EF4201db2448d", 42161)).toMatch(
       /Camelot/,
     );
-    expect(labelSpender("0xaBBc5F99639c9B6bCb58544ddf04EFA6802F2861", 42161)).toMatch(/GMX/);
+    expect(labelSpender("0xaBBc5F99639c9B6bCb58544ddf04EFA6802F4064", 42161)).toMatch(/GMX/);
   });
 });

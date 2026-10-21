@@ -34,14 +34,14 @@ const PERMIT2 = addr("0x000000000022D473030F116dDEE9F6B43aC78BA3");
 const SEAPORT_15 = addr("0x00000000000000ADc04C56Bf30aC9d3c0aAF14dC");
 const SEAPORT_16 = addr("0x0000000000000068F116a894984e2DB1123eB395");
 const OPENSEA_CONDUIT = addr("0x1E0049783F008A0085193E00003D00cd54003c71");
-const ZERO_EX_PROXY = addr("0xDef1C0ded9bec7F1a16708146636bDe32feFcB54");
+const ZERO_EX_PROXY = addr("0xDef1C0ded9bec7F1a1670819833240f027b25EfF");
 const INCH_V5 = addr("0x1111111254EEB25477B68fb85Ed929f73A960582");
 const INCH_V6 = addr("0x111111125421cA6dc452d289314280a0f8842A65");
 const COW_SETTLEMENT = addr("0x9008D19f58AAbD9eD0D60971565AA8510560ab41");
 const BALANCER_VAULT = addr("0xBA12222222228d8Ba445958a75a0704d566BF2C8");
 const KYBER_META = addr("0x6131B5fae19EA4f9D964eAc0408E4408b66337b5");
 const OPENOCEAN = addr("0x6352a56caadC4F1E25CD6c75970Fa768A3304e64");
-const BLUR_MARKET = addr("0x000000000000Ad05Ccc4F286Ae82ac8894C1eE7B");
+const BLUR_MARKET = addr("0x000000000000Ad05Ccc4F10045630fb830B95127");
 
 /** High-circulation Ethereum mainnet ERC-20s used as a probe safety net. */
 export const ETHEREUM_TOKENS: readonly KnownToken[] = [
@@ -66,22 +66,22 @@ export const ETHEREUM_TOKENS: readonly KnownToken[] = [
   { address: addr("0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE"), symbol: "SHIB", name: "SHIBA INU", decimals: 18 },
   { address: addr("0x4d224452801ACEd8B2F0aebE155379bb5D594381"), symbol: "APE", name: "ApeCoin", decimals: 18 },
   { address: addr("0x853d955aCEf822Db058eb8505911ED77F175b99e"), symbol: "FRAX", name: "Frax", decimals: 18 },
-  { address: addr("0x5f98805A4E8be255a32880FDeC7F6728C91dA08F"), symbol: "LUSD", name: "Liquity USD", decimals: 18 },
+  { address: addr("0x5f98805A4E8be255a32880FDeC7F6728C6568bA0"), symbol: "LUSD", name: "Liquity USD", decimals: 18 },
   { address: addr("0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f"), symbol: "GHO", name: "GHO Token", decimals: 18 },
   { address: addr("0x4c9EDD5852cd905f086C759E8383e09bff1E68B3"), symbol: "USDe", name: "Ethena USDe", decimals: 18 },
-  { address: addr("0x9D39A5DE30e57443BfF2A8307A4256c8797A4d07"), symbol: "sUSDe", name: "Staked USDe", decimals: 18 },
+  { address: addr("0x9D39A5DE30e57443BfF2A8307A4256c8797A3497"), symbol: "sUSDe", name: "Staked USDe", decimals: 18 },
   { address: addr("0xCd5fE23C85820F7B72D0926FC9b05b43E359b7ee"), symbol: "weETH", name: "Wrapped eETH", decimals: 18 },
   { address: addr("0xbf5495Efe5DB9ce00f80364C8B423567e58d2110"), symbol: "ezETH", name: "Renzo Restaked ETH", decimals: 18 },
   { address: addr("0xae78736Cd615f374D3085123A210448E74Fc6393"), symbol: "rETH", name: "Rocket Pool ETH", decimals: 18 },
   { address: addr("0xBe9895146f7AF43049ca1c1AE358B0541Ea49704"), symbol: "cbETH", name: "Coinbase Wrapped Staked ETH", decimals: 18 },
-  { address: addr("0x808507121B80c02388fAd147aC5b8A64093d6c31"), symbol: "PENDLE", name: "Pendle", decimals: 18 },
-  { address: addr("0x57e114B111dbc809910550b8c1Bd5991995a027c"), symbol: "ENA", name: "Ethena", decimals: 18 },
+  { address: addr("0x808507121B80c02388fAd14726482e061B8da827"), symbol: "PENDLE", name: "Pendle", decimals: 18 },
+  { address: addr("0x57e114B691Db790C35207b2e685D4A43181e6061"), symbol: "ENA", name: "Ethena", decimals: 18 },
   { address: addr("0xFe0c30065B384F05761f15d0CC899D4F9F9Cc0eB"), symbol: "ETHFI", name: "ether.fi", decimals: 18 },
   { address: addr("0x56072C95FAA701256059aa122697B133aDEd9279"), symbol: "SKY", name: "SKY", decimals: 18 },
   { address: addr("0xD33526068D116cE69F19A9ee46F0bd304F21A51f"), symbol: "RPL", name: "Rocket Pool Protocol", decimals: 18 },
   { address: addr("0x3432B6A60D23Ca0dFCa7761B7ab56459D9C964D0"), symbol: "FXS", name: "Frax Share", decimals: 18 },
-  { address: addr("0x4E15361FD6b4CC38284baA7F2acE0B9Ab2b91c32"), symbol: "FTM", name: "Fantom Token", decimals: 18 },
-  { address: addr("0xB50721BCf8d664c30412Cfbc6cf7a978230dAe0F"), symbol: "ARB", name: "Arbitrum", decimals: 18 },
+  { address: addr("0x4E15361FD6b4BB609Fa63C81A2be19d873717870"), symbol: "FTM", name: "Fantom Token", decimals: 18 },
+  { address: addr("0xB50721BCf8d664c30412Cfbc6cf7a15145234ad1"), symbol: "ARB", name: "Arbitrum", decimals: 18 },
   { address: addr("0x58b6A8A3302369DAEc383334672404Ee733aB239"), symbol: "LPT", name: "Livepeer Token", decimals: 18 },
   { address: addr("0x92D6C1e31e14520e676a687F0a93788B716BEff5"), symbol: "DYDX", name: "dYdX", decimals: 18 },
   { address: addr("0x111111111117dC0aa78b770fA6A738034120C302"), symbol: "1INCH", name: "1INCH Token", decimals: 18 },
@@ -92,15 +92,13 @@ export const ETHEREUM_SPENDERS: readonly KnownSpender[] = [
   { address: addr("0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D"), label: "Uniswap V2: Router" },
   { address: addr("0xE592427A0AEce92De3Edee1F18E0157C05861564"), label: "Uniswap V3: Router" },
   { address: addr("0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45"), label: "Uniswap V3: Router 2" },
-  { address: addr("0x3fC91A3afd70395Cc27074A7cB26D90f3a0e2C8F"), label: "Uniswap Universal Router" },
-  { address: addr("0xEf1c6E67703c7BD7107eed8303Fbe6EC888d78b0"), label: "Uniswap Universal Router" },
-  { address: addr("0x66a9893cC07D91D95644AEDD05D03f95e1dBA8Af"), label: "Uniswap Universal Router" },
+  { address: addr("0x3fC91A3afd70395Cd496C647d5a6CC9D4B2b7FAD"), label: "Uniswap Universal Router" },
+  { address: addr("0x66a9893cC07D91D95644AEDD05D03f95e1dBA8Af"), label: "Uniswap Universal Router V2" },
   { address: addr("0x4c82d1fbfe28c977cbb58d8c7ff8fcf9f70a2cca"), label: "Uniswap Universal Router 2.1" },
   { address: PERMIT2, label: "Uniswap Permit2" },
   { address: addr("0xC36442b4a4522E871399CD717aBDD847Ab11FE88"), label: "Uniswap V3: Positions NFT" },
   { address: addr("0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e"), label: "Uniswap V4: Position Manager" },
   { address: addr("0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5"), label: "Across Protocol: SpokePool" },
-  { address: addr("0xe35e9842fceaCa96570b734083f4a58e8F7C5f2A"), label: "Across Protocol: SpokePool" },
   { address: addr("0x4D9079Bb4165aeb4084c526a32695dCfd2F77381"), label: "Across Protocol: SpokePool" },
   { address: INCH_V5, label: "1inch v5 Aggregation Router" },
   { address: INCH_V6, label: "1inch v6 Aggregation Router" },
@@ -111,10 +109,8 @@ export const ETHEREUM_SPENDERS: readonly KnownSpender[] = [
   { address: addr("0x0000000000A39bb272e79075ade125fd351887Ac"), label: "Blur Pool" },
   { address: addr("0x59728544B08AB483533076417fBBB2Fd0B17CE3A"), label: "LooksRare Exchange" },
   { address: OPENSEA_CONDUIT, label: "OpenSea Conduit" },
-  { address: addr("0x22F9dCF4647074a2e17A9c4Ae2ed75FCcD5dC4Ef"), label: "0x Settler" },
   { address: COW_SETTLEMENT, label: "CoW Protocol: GPv2 Vault Relayer" },
   { address: BALANCER_VAULT, label: "Balancer Vault" },
-  { address: addr("0x99a58482EE1c2238981CE66757CdD3eE3c8BfC16"), label: "KyberSwap Router" },
   { address: KYBER_META, label: "KyberSwap Meta Aggregation Router" },
   { address: addr("0x1111111254fb6c44bAC0beD2854e76F90643097d"), label: "1inch v4 Aggregation Router" },
   { address: addr("0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F"), label: "SushiSwap: Router" },
@@ -158,22 +154,20 @@ const BASE_TOKENS: readonly KnownToken[] = [
   { address: addr("0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2"), symbol: "USDT", name: "Tether USD", decimals: 6 },
   { address: addr("0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb"), symbol: "DAI", name: "Dai Stablecoin", decimals: 18 },
   { address: addr("0x2Ae3F1Ec7F1F5012CFEab0185bfc7aa3cf0DEc22"), symbol: "cbETH", name: "Coinbase Wrapped Staked ETH", decimals: 18 },
-  { address: addr("0xc1CBa3fCea344f92D9239c88ECb36028e8cD8c00"), symbol: "wstETH", name: "Wrapped liquid staked ETH", decimals: 18 },
+  { address: addr("0xc1CBa3fCea344f92D9239c08C0568f6F2F0ee452"), symbol: "wstETH", name: "Wrapped liquid staked ETH", decimals: 18 },
   { address: addr("0x940181a94A35A4569E4529A3CDfB74e38FD98631"), symbol: "AERO", name: "Aerodrome", decimals: 18 },
   { address: addr("0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed"), symbol: "DEGEN", name: "Degen", decimals: 18 },
   { address: addr("0x532f27101965dd16442E59d40670FaF5ebB142E4"), symbol: "BRETT", name: "Brett", decimals: 18 },
-  { address: addr("0x0b3e328455c4059EEb9e1f89Aefc4443a87a23ca"), symbol: "VIRTUAL", name: "Virtual Protocol", decimals: 18 },
-  { address: addr("0xB6fe221Fe9EbF59d59DFe4ee2AeAA47Bf4Caa97E"), symbol: "rETH", name: "Rocket Pool ETH", decimals: 18 },
-  { address: addr("0x04C0599Ae5A44757c0af6F1d598eaEF957016667"), symbol: "weETH", name: "Wrapped eETH", decimals: 18 },
+  { address: addr("0x0b3e328455c4059EEb9e3f84b5543F74E24e7E1b"), symbol: "VIRTUAL", name: "Virtual Protocol", decimals: 18 },
+  { address: addr("0xB6fe221Fe9EeF5aBa221c348bA20A1Bf5e73624c"), symbol: "rETH", name: "Rocket Pool ETH", decimals: 18 },
+  { address: addr("0x04C0599Ae5A44757c0af6F9eC3b93da8976c150A"), symbol: "weETH", name: "Wrapped eETH", decimals: 18 },
   { address: addr("0xA88594D404727625A9437C3f886C7643872296AE"), symbol: "WELL", name: "Moonwell", decimals: 18 },
-  { address: addr("0x4158734D47Fc9692176B5085E0F123cbA4C7647A"), symbol: "wBLT", name: "Wrapped BMX Liquidity Token", decimals: 18 },
   { address: addr("0xEB466342C4d449BC9f53A865D5Cb90586f405215"), symbol: "axlUSDC", name: "Axelar Wrapped USDC", decimals: 6 },
   { address: addr("0x417Ac0e078398C154EdFadD9Ef675d30Be60Af93"), symbol: "crvUSD", name: "crvUSD", decimals: 18 },
 ];
 
 const BASE_SPENDERS: readonly KnownSpender[] = [
   { address: addr("0x2626664c2603336E57B271c5C0b26F421741e481"), label: "Uniswap V3: SwapRouter02" },
-  { address: addr("0x3fC91A3afd70395Cc27074A7cB26D90f3a0e2C8F"), label: "Uniswap Universal Router" },
   { address: addr("0x3fC91A3afd70395Cd496C647d5a6CC9D4B2b7FAD"), label: "Uniswap Universal Router" },
   { address: addr("0x6fF5693b99212Da76ad316178A184AB56D299b43"), label: "Uniswap Universal Router" },
   { address: addr("0xfDf682F51FE81Aa4898F0AE2163d8A55c127fbC7"), label: "Uniswap Universal Router 2.1" },
@@ -181,12 +175,11 @@ const BASE_SPENDERS: readonly KnownSpender[] = [
   { address: addr("0x03a520b32C04BF3bEEf7BEb72E919cf822Ed34f1"), label: "Uniswap V3: Positions NFT" },
   { address: addr("0xcF77a3Ba9A5CA399B7c97c74d54e5b1Beb874E43"), label: "Aerodrome Router" },
   { address: addr("0xBE6D8f0d05cC4be24d5167a3eF062215bE6D18a5"), label: "Aerodrome Slipstream Router" },
-  { address: addr("0x6Cb442acF35158D5eDa88feE9Eff14E17d6b60f3"), label: "Aerodrome Router" },
+  { address: addr("0xcF77a3Ba9A5CA399B7c97c74d54e5b1Beb874E43"), label: "Aerodrome Router" },
   { address: addr("0x09aea4b2242abC8bb4BB78D537A67a245A7bEC64"), label: "Across Protocol: SpokePool" },
   { address: INCH_V5, label: "1inch v5 Aggregation Router" },
   { address: INCH_V6, label: "1inch v6 Aggregation Router" },
   { address: ZERO_EX_PROXY, label: "0x Exchange Proxy" },
-  { address: addr("0x22F9dCF4647074a2e17A9c4Ae2ed75FCcD5dC4Ef"), label: "0x Settler" },
   { address: SEAPORT_15, label: "OpenSea Seaport 1.5" },
   { address: SEAPORT_16, label: "OpenSea Seaport 1.6" },
   { address: OPENSEA_CONDUIT, label: "OpenSea Conduit" },
@@ -195,7 +188,7 @@ const BASE_SPENDERS: readonly KnownSpender[] = [
   { address: KYBER_META, label: "KyberSwap Meta Aggregation Router" },
   { address: OPENOCEAN, label: "OpenOcean Exchange" },
   { address: addr("0x327Df1E6de05895d2ab08513aaDD9313Fe505d86"), label: "BaseSwap Router" },
-  { address: addr("0x8cFe327CEc66d1D690F049fF84B0f5B6b9721D09"), label: "Odos Router" },
+  { address: addr("0x19cEeAd7105607Cd444F5ad10dd51356436095a1"), label: "Odos Router" },
 ];
 
 const BASE_NFTS: readonly KnownNft[] = [];
@@ -207,14 +200,14 @@ const ARBITRUM_TOKENS: readonly KnownToken[] = [
   { address: addr("0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9"), symbol: "USDT", name: "Tether USD", decimals: 6 },
   { address: addr("0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1"), symbol: "DAI", name: "Dai Stablecoin", decimals: 18 },
   { address: addr("0x912CE59144191C1204E64559FE8253a0e49E6548"), symbol: "ARB", name: "Arbitrum", decimals: 18 },
-  { address: addr("0x2f2a2543B76A807eF8d2b03B8D0F9B00B8C4c4c8"), symbol: "WBTC", name: "Wrapped BTC", decimals: 8 },
+  { address: addr("0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f"), symbol: "WBTC", name: "Wrapped BTC", decimals: 8 },
   { address: addr("0xf97f4df75117a78c1A5a0DBb814Af92458539FB4"), symbol: "LINK", name: "Chainlink", decimals: 18 },
   { address: addr("0xFa7F8980b0f1E64A2062791cc3b0871572f1F7f0"), symbol: "UNI", name: "Uniswap", decimals: 18 },
   { address: addr("0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a"), symbol: "GMX", name: "GMX", decimals: 18 },
   { address: addr("0x539bdE0d7Dbd336b79148AA742883198BBF60342"), symbol: "MAGIC", name: "MAGIC", decimals: 18 },
   { address: addr("0x3082CC23568eA640225c2467653dB90e9250AaA0"), symbol: "RDNT", name: "Radiant", decimals: 18 },
-  { address: addr("0x3d9907F9a368bb79b87BF7F75D267206Bb785bCE"), symbol: "GRAIL", name: "Camelot GRAIL", decimals: 18 },
-  { address: addr("0x5979D7b793E3267621c4b778B6F4E623BDEC9C59"), symbol: "wstETH", name: "Wrapped liquid staked ETH", decimals: 18 },
+  { address: addr("0x3d9907F9a368ad0a51Be60f7Da3b97cf940982D8"), symbol: "GRAIL", name: "Camelot GRAIL", decimals: 18 },
+  { address: addr("0x5979D7b546E38E414F7E9822514be443A4800529"), symbol: "wstETH", name: "Wrapped liquid staked ETH", decimals: 18 },
   { address: addr("0x35751007a407ca6FEFfE80b3cB397736D2cf4dbe"), symbol: "weETH", name: "Wrapped eETH", decimals: 18 },
   { address: addr("0xEC70Dcb4A1EFa46b8F2D97C310C9c4790ba5ffA8"), symbol: "rETH", name: "Rocket Pool ETH", decimals: 18 },
   { address: addr("0x0c880f6761F1af8d9Aa9C466984b80DAb9a8c9e8"), symbol: "PENDLE", name: "Pendle", decimals: 18 },
@@ -233,13 +226,12 @@ const ARBITRUM_SPENDERS: readonly KnownSpender[] = [
   { address: addr("0xC36442b4a4522E871399CD717aBDD847Ab11FE88"), label: "Uniswap V3: Positions NFT" },
   { address: addr("0xc873fEcbd354f5A56E00E710B90EF4201db2448d"), label: "Camelot V2 Router" },
   { address: addr("0x1F721E2E82F6676FCE4eA07A5958cF098D339e18"), label: "Camelot V3 Router" },
-  { address: addr("0xaBBc5F99639c9B6bCb58544ddf04EFA6802F2861"), label: "GMX Router" },
+  { address: addr("0xaBBc5F99639c9B6bCb58544ddf04EFA6802F4064"), label: "GMX Router" },
   { address: addr("0xb87a436B93fFE9D75c5cFA7bAcFff96430b09868"), label: "GMX Position Router" },
   { address: addr("0xe35e9842fceaCa96570b734083f4a58e8F7C5f2A"), label: "Across Protocol: SpokePool" },
   { address: INCH_V5, label: "1inch v5 Aggregation Router" },
   { address: INCH_V6, label: "1inch v6 Aggregation Router" },
   { address: ZERO_EX_PROXY, label: "0x Exchange Proxy" },
-  { address: addr("0x22F9dCF4647074a2e17A9c4Ae2ed75FCcD5dC4Ef"), label: "0x Settler" },
   { address: SEAPORT_15, label: "OpenSea Seaport 1.5" },
   { address: SEAPORT_16, label: "OpenSea Seaport 1.6" },
   { address: OPENSEA_CONDUIT, label: "OpenSea Conduit" },

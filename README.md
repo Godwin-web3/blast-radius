@@ -10,6 +10,24 @@ A read-only map of **open ERC-20 allowances** (and ERC-721 `ApprovalForAll` wher
 
 Unlimited Uniswap / Permit2 / Across-style spenders are ordinary DeFi hygiene failures, not a glitch. `vitalik.eth` is a known, public Ethereum reference: it often still shows max-uint approvals sitting in front of real token balances. Approvals are **per chain** — a revoke on Ethereum does nothing on Base. On Solana, exposure is a **token-account delegate**, not an ERC-20 allowance — we do not fake that mental model. Blast Radius does not invent a dollar figure when CoinGecko has no price. If history (EVM) or token-account RPC (Solana) is truncated by public RPC limits, the page says so **for that chain**.
 
+## Who controls the spender
+
+Size alone is the wrong risk score. A max approval to an ownerless, non-upgradeable router is not the same risk as the same approval to an upgradeable proxy whose admin is a single EOA. Every EVM spender is profiled live:
+
+- **Shape:** plain wallet (EOA), EIP-7702 delegated wallet, EIP-1167 clone, upgradeable proxy (EIP-1967 transparent/UUPS/beacon, EIP-1822, legacy ZeppelinOS slots), or no standard upgrade path. Small contracts that `DELEGATECALL` but match no known slot are flagged as custom proxies and graded `?`.
+- **Controller:** the upgrade admin (or `owner()` for non-upgradeable contracts), followed through a ProxyAdmin one hop, then classified as EOA, Safe (with `m-of-n`), timelock (with its delay), or unknown contract.
+- **Verified source** via Etherscan when `ETHERSCAN_API_KEY` is set.
+
+Each spender gets a grade (A to F, or `?` when something could not be read) and the ranking becomes *exposure × how easily the spender can turn hostile*. Unknown is never treated as safe.
+
+## Permit2 sub-allowances
+
+An ERC-20 approval to Permit2 is only the outer door. Blast Radius reads Permit2's own `allowance(owner, token, spender)` table (from Permit2 `Approval`/`Permit` logs plus a known-router probe), drops expired entries, and shows each live sub-allowance with its expiry. Movable is `min(sub-allowance, outer allowance, balance)`; sub-allowances never add to the headline total, since the outer Permit2 row already counts those tokens.
+
+## Checking the hardcoded catalog
+
+`npm run verify:known` checks that every token, spender, NFT, and operator in `lib/known.ts` is a live contract on its chain (network-bound, not part of `npm test`).
+
 ## Stack
 
 - Next.js App Router + TypeScript
