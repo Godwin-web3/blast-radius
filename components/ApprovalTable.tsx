@@ -36,6 +36,7 @@ export function ApprovalTable({
             <th>{solana ? "Delegated" : "Allowance"}</th>
             <th>Balance</th>
             <th>Movable now</th>
+            {solana ? null : <th>Who controls the spender</th>}
           </tr>
         </thead>
         <tbody>
@@ -52,6 +53,11 @@ export function ApprovalTable({
                   {a.spenderLabel}
                 </a>
                 <div className="muted">{shortAddress(a.spender, 5)}</div>
+                {a.kind === "permit2" ? (
+                  <div className="muted" style={{ marginTop: 4 }}>
+                    via Permit2{a.expiresAt ? ` · expires ${formatExpiry(a.expiresAt)}` : ""}
+                  </div>
+                ) : null}
               </td>
               <td>
                 {a.kind === "erc721-for-all" || a.unlimited ? (
@@ -87,10 +93,50 @@ export function ApprovalTable({
                           ? "0 (delegate still open)"
                           : "0 (approval still open)"}
               </td>
+              {solana ? null : (
+                <td className="control-cell">
+                  {a.control ? (
+                    <>
+                      <span className={`grade grade-${gradeClass(a.control.grade)}`}>
+                        {a.control.grade}
+                      </span>{" "}
+                      <span>{a.control.summary}</span>
+                      {a.control.controller && a.control.controllerRole !== "key" ? (
+                        <div className="muted" style={{ marginTop: 4 }}>
+                          <a
+                            href={explorerUrl(a.control.controller.address)}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {shortAddress(a.control.controller.address, 5)}
+                          </a>
+                        </div>
+                      ) : null}
+                    </>
+                  ) : (
+                    <>
+                      <span className="grade grade-unknown">?</span>{" "}
+                      <span className="muted">Not profiled in time. Unknown, not safe.</span>
+                    </>
+                  )}
+                </td>
+              )}
             </tr>
           ))}
         </tbody>
       </table>
     </div>
   );
+}
+
+function gradeClass(g: string): string {
+  return g === "?" ? "unknown" : g.toLowerCase();
+}
+
+function formatExpiry(sec: number): string {
+  const d = new Date(sec * 1000);
+  if (sec > 4_000_000_000) {
+    return "never";
+  }
+  return d.toISOString().slice(0, 10);
 }

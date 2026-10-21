@@ -507,3 +507,32 @@ input {
     flex-direction: column;
   }
 }
+
+.banner-hot {
+  border-color: rgba(255, 59, 31, 0.5);
+  background: rgba(255, 59, 31, 0.1);
+  color: #ffc9bd;
+}
+
+.control-cell {
+  max-width: 340px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.grade {
+  display: inline-block;
+  min-width: 22px;
+  text-align: center;
+  font-weight: 800;
+  padding: 1px 6px;
+  border: 1px solid currentColor;
+  margin-right: 4px;
+}
+
+.grade-a { color: #6ee7a8; }
+.grade-b { color: #a3e635; }
+.grade-c { color: #ffb020; }
+.grade-d { color: #ff7a1f; }
+.grade-f { color: #ff3b1f; }
+.grade-unknown { color: var(--mute); }

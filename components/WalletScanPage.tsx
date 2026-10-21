@@ -1,3 +1,4 @@
+import { formatUsdCompact } from "@/lib/headline";
 import { ApprovalTable } from "@/components/ApprovalTable";
 import { BlastMap } from "@/components/BlastMap";
 import { Poster } from "@/components/Poster";
@@ -105,6 +106,17 @@ export async function WalletScanPage({ segments }: { segments: readonly string[]
             approvals={result.approvals}
             family={result.family}
           />
+          {result.headline.weakControlCount ? (
+            <div className="banner banner-hot" role="status">
+              <strong>{result.headline.weakControlCount}</strong> of these approvals sit
+              behind a spender graded D or F: a plain wallet, a single key, or a weak
+              multisig that can turn the contract hostile without warning
+              {result.headline.weakControlUsd
+                ? ` (${formatUsdCompact(result.headline.weakControlUsd)} live)`
+                : ""}
+              . Revoke those first.
+            </div>
+          ) : null}
           <ApprovalTable
             approvals={result.approvals}
             explorerUrl={CHAINS[result.chain].explorer.addressUrl}

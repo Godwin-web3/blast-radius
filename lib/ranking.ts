@@ -22,13 +22,32 @@ export function normalizedAmount(amount: bigint, decimals: number): number {
 }
 
 /**
- * Higher score = more blast radius.
+ * Higher score = more blast radius: size of the exposure × how easily the
+ * spender can turn hostile.
  * Unlimited live ERC-20 / SPL delegates (tokens sitting behind max
  * allowance or u64::MAX) ranks first, then operator-wide NFT approvals,
  * then latent unlimited, then limited by real USD if we have it — never
  * by a guessed price.
  */
 export function riskScore(approval: RankableApproval): number {
+  return exposureScore(approval) * controlWeight(approval);
+}
+
+/**
+ * Multiplier from the spender's control profile. 0.33 for fixed ownerless
+ * code up to 1.25 for a spender one private key away from hostile.
+ * Neutral (1) when no profile is available, so unknown never reads as safe.
+ */
+export function controlWeight(approval: RankableApproval): number {
+  const h = approval.control?.hostility;
+  if (h == null || !Number.isFinite(h)) {
+    return 1;
+  }
+  return 0.25 + Math.max(0, Math.min(1, h));
+}
+
+/** Size-only exposure (the v1 score): unlimited × funded × price. */
+export function exposureScore(approval: RankableApproval): number {
   if (approval.kind === "erc721-for-all") {
     return NFT_BASE;
   }

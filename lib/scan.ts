@@ -17,13 +17,26 @@ import {
 import { ETHERSCAN_V2, getChainClient, getMainnetClient, type ChainClient } from "./client";
 import { isZeroAddress, padTopicAddress, topicToAddress } from "./format";
 import { buildHeadline } from "./headline";
-import { catalogFor, knownNft, knownToken, labelSpender, type KnownCatalog } from "./known";
+import { profileSpenders } from "./control";
+import { catalogFor, knownNft, knownToken, labelSpender, PERMIT2, type KnownCatalog } from "./known";
+import {
+  discoverPermit2Pairs,
+  isLivePermit2,
+  isUnlimitedPermit2,
+  permit2Movable,
+  readPermit2Allowances,
+  type Permit2Pair,
+} from "./permit2";
 import { fetchUsdPrices, usdFromAtomic } from "./prices";
-import { approvalId, rankApprovals } from "./ranking";
+import { approvalId, exposureScore, rankApprovals } from "./ranking";
 import { resolveWallet } from "./resolve";
 import { scanSolanaWallet } from "./solana/scan";
 import type { OpenApproval, ScanResult, ScanSources } from "./types";
 import { isUnlimitedAllowance, movableAmount } from "./unlimited";
+import { withTimeout } from "./timeout";
+
+/** Per-call cap on eth_getLogs. Fallback transports can otherwise retry for minutes. */
+const LOG_CALL_TIMEOUT_MS = 4_000;
 
 const APPROVAL_TOPIC =
   "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925" as Hex;
@@ -217,27 +230,25 @@ async function discoverLogsRpc(
     calls += 1;
     try {
       if (kind === "erc20") {
-        const logs = await client.getLogs({
-          event: APPROVAL_EVENT,
-          args: { owner },
-          fromBlock,
-          toBlock,
-        });
+        const logs = await withTimeout(
+          client.getLogs({ event: APPROVAL_EVENT, args: { owner }, fromBlock, toBlock }),
+          LOG_CALL_TIMEOUT_MS,
+          "getLogs",
+        );
         ingest(logs, kind);
       } else {
-        const logs = await client.getLogs({
-          event: APPROVAL_FOR_ALL_EVENT,
-          args: { owner },
-          fromBlock,
-          toBlock,
-        });
+        const logs = await withTimeout(
+          client.getLogs({ event: APPROVAL_FOR_ALL_EVENT, args: { owner }, fromBlock, toBlock }),
+          LOG_CALL_TIMEOUT_MS,
+          "getLogs",
+        );
         ingest(logs, kind);
       }
       minFrom = minFrom == null || fromBlock < minFrom ? fromBlock : minFrom;
       return true;
     } catch {
       const span = toBlock - fromBlock;
-      if (span <= 2_000n || calls >= MAX_LOG_CALLS - 1) {
+      if (span <= 2_000n || calls >= MAX_LOG_CALLS - 1 || Date.now() - started > LOG_BUDGET_MS) {
         return false;
       }
       const mid = fromBlock + span / 2n;
@@ -671,7 +682,7 @@ async function scanEvmWallet(
       );
       return new Map<string, Pair>();
     }),
-    discoverLogsRpc(client, resolved.address, latest).catch((err: unknown) => {
+    withTimeout(discoverLogsRpc(client, resolved.address, latest), LOG_BUDGET_MS + 6_000, "log scan").catch((err: unknown) => {
       warnings.push(
         `Log scan failed: ${err instanceof Error ? err.message : "rpc"}`,
       );
@@ -752,6 +763,91 @@ async function scanEvmWallet(
       usdPrice,
     };
   });
+
+  // --- Permit2 sub-allowances ------------------------------------------
+  // Only tokens that still have a live ERC-20 allowance to Permit2 can be
+  // pulled through it, so those are the only ones worth reading.
+  const permit2Outer = approvals.filter(
+    (a) => a.kind === "erc20" && a.spender.toLowerCase() === PERMIT2.toLowerCase(),
+  );
+  let permit2Complete = true;
+  if (permit2Outer.length > 0) {
+    try {
+      const outerTokens = new Set(permit2Outer.map((a) => a.token.toLowerCase()));
+      const discovered = await withTimeout(
+        discoverPermit2Pairs(client, resolved.address, latest),
+        10_000,
+        "Permit2 log scan",
+      ).catch(() => ({ pairs: [] as Permit2Pair[], complete: false }));
+      permit2Complete = discovered.complete;
+      const candidates = new Map<string, Permit2Pair>();
+      for (const p of discovered.pairs) {
+        if (outerTokens.has(p.token.toLowerCase())) {
+          candidates.set(`${p.token.toLowerCase()}:${p.spender.toLowerCase()}`, p);
+        }
+      }
+      // Safety net when logs are capped: known routers × Permit2-approved tokens.
+      for (const outer of permit2Outer) {
+        for (const sp of catalog.spenders) {
+          if (sp.address.toLowerCase() === PERMIT2.toLowerCase()) continue;
+          const p = { token: outer.token as Address, spender: sp.address as Address };
+          candidates.set(`${p.token.toLowerCase()}:${p.spender.toLowerCase()}`, p);
+        }
+      }
+      const nowSec = Math.floor(Date.now() / 1000);
+      const subs = await readPermit2Allowances(client, resolved.address, [...candidates.values()]);
+      for (const sub of subs) {
+        if (!isLivePermit2(sub, nowSec)) continue;
+        const outer = permit2Outer.find((a) => a.token.toLowerCase() === sub.token.toLowerCase());
+        if (!outer) continue;
+        const movable = permit2Movable(sub.amount, outer.allowance, outer.balance, outer.unlimited);
+        const usdMovable =
+          outer.usdPrice != null ? usdFromAtomic(movable, outer.decimals, outer.usdPrice) : null;
+        approvals.push({
+          id: approvalId(sub.token, sub.spender, "permit2"),
+          kind: "permit2",
+          token: sub.token,
+          tokenSymbol: outer.tokenSymbol,
+          tokenName: outer.tokenName,
+          decimals: outer.decimals,
+          spender: sub.spender,
+          spenderLabel: labelSpender(sub.spender, chain),
+          allowance: sub.amount,
+          balance: outer.balance,
+          movable,
+          unlimited: isUnlimitedPermit2(sub.amount) && outer.unlimited,
+          usdMovable,
+          usdPrice: outer.usdPrice,
+          expiresAt: sub.expiration,
+        });
+      }
+    } catch (err) {
+      permit2Complete = false;
+      warnings.push(`Permit2 sub-allowance read failed: ${err instanceof Error ? err.message : "rpc"}`);
+    }
+    if (!permit2Complete) {
+      warnings.push(
+        "Permit2 history was capped by the RPC; sub-allowances to unknown spenders may be missing.",
+      );
+    }
+  }
+
+  // --- Spender control profiles ---------------------------------------
+  // Profile the spenders behind the largest exposures first, so the time
+  // budget is spent where it matters. Missing profiles stay neutral.
+  const bySize = [...approvals].sort((a, b) => exposureScore(b) - exposureScore(a));
+  const controls = await withTimeout(
+    profileSpenders(client, chain, bySize.map((a) => a.spender as Address)),
+    15_000,
+    "spender profiling",
+  ).catch(() => new Map());
+  for (const a of approvals) {
+    const c = controls.get(a.spender.toLowerCase());
+    if (c) a.control = c;
+  }
+  if (approvals.length > 0 && controls.size < new Set(approvals.map((a) => a.spender.toLowerCase())).size) {
+    warnings.push("Some spenders could not be profiled in time; their control is shown as unknown.");
+  }
 
   const ranked = rankApprovals(approvals);
   const partial = !logs.reachedGenesis;
