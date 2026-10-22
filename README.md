@@ -24,6 +24,25 @@ Each spender gets a grade (A to F, or `?` when something could not be read) and 
 
 An ERC-20 approval to Permit2 is only the outer door. Blast Radius reads Permit2's own `allowance(owner, token, spender)` table (from Permit2 `Approval`/`Permit` logs plus a known-router probe), drops expired entries, and shows each live sub-allowance with its expiry. Movable is `min(sub-allowance, outer allowance, balance)`; sub-allowances never add to the headline total, since the outer Permit2 row already counts those tokens.
 
+## Reverse index: who holds the keys
+
+The wallet scan asks "what can touch me?". `/spenders` asks the inverse: if an upgradeable
+or owned spender's key is compromised, how much can it move from everyone, right now?
+
+- `scripts/index/run.ts` grades every known Ethereum spender, skips A/B (no key to steal),
+  pulls every ERC-20 `Approval` to the rest from [HyperSync](https://docs.envio.dev/docs/HyperSync/overview),
+  then re-reads `allowance` + `balanceOf` for every pair through Multicall3. Event values are
+  never trusted: on Across, only ~9% of pairs that look open in logs are still live.
+- `.github/workflows/index.yml` runs it nightly (free on public repos), checkpoints discovery in
+  the Actions cache, and force-pushes `index.json` + `spenders/<address>.json` to the
+  `index-data` branch. The app reads that branch (`SPENDER_INDEX_URL` overrides), so there is no
+  database to pay for.
+- Pages: `/spenders` (leaderboard, ranked by movable USD × controller hostility) and
+  `/spender/<address>`. Every Ethereum scan row links to its spender's total.
+- Setup: add a free HyperSync token as repo secret `ENVIO_API_TOKEN`, then run the
+  "Spender index" workflow once. Optional `RPC_URL` secret for a faster RPC.
+- Not covered yet: NFT `setApprovalForAll`, Permit2 sub-allowances, Base/Arbitrum.
+
 ## Checking the hardcoded catalog
 
 `npm run verify:known` checks that every token, spender, NFT, and operator in `lib/known.ts` is a live contract on its chain (network-bound, not part of `npm test`).

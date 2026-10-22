@@ -1,0 +1,75 @@
+# Nightly reverse spender exposure index.
+# Needs repo secret ENVIO_API_TOKEN (free HyperSync token). Optional: RPC_URL.
+# Publishes out/ as a single orphan commit on the `index-data` branch, which the
+# app reads from raw.githubusercontent.com.
+
+name: Spender index
+
+on:
+  schedule:
+    - cron: "17 2 * * *"
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "Comma-separated spender addresses (blank = all)"
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: spender-index
+  cancel-in-progress: false
+
+jobs:
+  index:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+
+      - name: Restore discovery checkpoints
+        uses: actions/cache/restore@v4
+        with:
+          path: .index-cache
+          key: spender-index-${{ github.run_id }}
+          restore-keys: spender-index-
+
+      - name: Fetch previously published index
+        run: |
+          mkdir -p out
+          git fetch origin index-data --depth=1 && git --work-tree=out checkout origin/index-data -- . || echo "no index-data yet"
+
+      - name: Build index
+        env:
+          ENVIO_API_TOKEN: ${{ secrets.ENVIO_API_TOKEN }}
+          RPC_URL: ${{ secrets.RPC_URL }}
+          INDEX_BUDGET_MIN: "300"
+        run: |
+          if [ -n "${{ inputs.only }}" ]; then
+            npx tsx scripts/index/run.ts --only "${{ inputs.only }}"
+          else
+            npx tsx scripts/index/run.ts
+          fi
+
+      - name: Save discovery checkpoints
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .index-cache
+          key: spender-index-${{ github.run_id }}
+
+      - name: Publish to index-data
+        run: |
+          cd out
+          git init -q -b index-data
+          git config user.name "blast-radius-indexer"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git commit -qm "Spender index $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" index-data

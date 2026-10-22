@@ -1,5 +1,6 @@
 import { formatUsdCompact } from "@/lib/headline";
-import { ApprovalTable } from "@/components/ApprovalTable";
+import { ApprovalTable, type SpenderExposure } from "@/components/ApprovalTable";
+import { loadSpenderIndex } from "@/lib/spender-index";
 import { BlastMap } from "@/components/BlastMap";
 import { Poster } from "@/components/Poster";
 import { SearchForm } from "@/components/SearchForm";
@@ -48,6 +49,14 @@ export async function WalletScanPage({ segments }: { segments: readonly string[]
     }
   }
 
+  let exposure: SpenderExposure | undefined;
+  if (result && result.chain === "ethereum" && result.approvals.length) {
+    const index = await loadSpenderIndex(2500);
+    exposure = Object.fromEntries(
+      (index?.spenders ?? []).map((s) => [s.address.toLowerCase(), { movableUsd: s.movableUsd, wallets: s.wallets }]),
+    );
+  }
+
   const chainSlug = parsed?.chain.slug ?? "ethereum";
   const initialQuery = parsed?.query ?? "";
   const sharePath = result
@@ -63,6 +72,7 @@ export async function WalletScanPage({ segments }: { segments: readonly string[]
           Blast Radius
         </Link>
         <nav>
+          <Link href="/spenders">spenders</Link>
           <a href="https://revoke.cash" target="_blank" rel="noreferrer">
             revoke.cash
           </a>
@@ -121,6 +131,7 @@ export async function WalletScanPage({ segments }: { segments: readonly string[]
             approvals={result.approvals}
             explorerUrl={CHAINS[result.chain].explorer.addressUrl}
             family={result.family}
+            exposure={exposure}
           />
           {!result.headline.hasUsd && result.approvals.some((a) => a.movable > 0n) ? (
             <p className="muted" style={{ marginTop: 16 }}>

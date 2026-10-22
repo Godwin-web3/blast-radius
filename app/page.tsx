@@ -11,6 +11,7 @@ export default function HomePage() {
           Blast Radius
         </Link>
         <nav>
+          <Link href="/spenders">who holds the keys</Link>
           <a href="https://revoke.cash" target="_blank" rel="noreferrer">
             revoke.cash
           </a>

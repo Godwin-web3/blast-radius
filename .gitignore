@@ -34,3 +34,12 @@ yarn-error.log*
 .idea
 .vscode
 *.tsbuildinfo
+# spender index working files
+data/*.pairs.json
+data/*.live.ndjson
+data/*.pos
+data/verify.out
+data/*.disc.json
+.index-cache/
+out/
+data/
