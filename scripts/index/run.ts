@@ -105,7 +105,7 @@ type Live = { token: string; owner: string; movable: bigint; unlimited: boolean 
 async function verify(spender: string, pairs: [string, string][]): Promise<{ live: Live[]; failed: number; block: number }> {
   const block = Number(await rpc.getBlockNumber());
   const live: Live[] = [];
-  let failed = 0;
+  const failedPairs: [string, string][] = [];
   const one = async (chunk: [string, string][]) => {
     const contracts = chunk.flatMap(([token, owner]) => [
       { address: token as Address, abi: erc20Abi, functionName: "allowance" as const, args: [owner as Address, spender as Address] },
@@ -128,7 +128,7 @@ async function verify(spender: string, pairs: [string, string][]): Promise<{ liv
         await sleep(1500 * (a + 1));
       }
     }
-    failed += chunk.length;
+    failedPairs.push(...chunk);
   };
   for (let i = 0; i < pairs.length; i += CHUNK * PARALLEL) {
     const batch: Promise<void>[] = [];
@@ -139,7 +139,14 @@ async function verify(spender: string, pairs: [string, string][]): Promise<{ liv
     await Promise.all(batch);
     if ((i / (CHUNK * PARALLEL)) % 25 === 0) log(spender, "verified", i, "/", pairs.length);
   }
-  return { live, failed, block };
+  // Second pass, sequential and in small chunks: a dropped read is unknown, not zero.
+  const retry = failedPairs.splice(0);
+  for (let i = 0; i < retry.length; i += 50) {
+    await sleep(500);
+    await one(retry.slice(i, i + 50));
+  }
+  log(spender, "unverified after retry", failedPairs.length);
+  return { live, failed: failedPairs.length, block };
 }
 
 type Price = { price: number; decimals: number; symbol: string };
@@ -197,7 +204,7 @@ async function indexSpender(address: string, label: string, control: SpenderCont
     .filter(([, v]) => v && v !== "0x" && BigInt(v) > 0n)
     .map(([k]) => k.split("|") as [string, string]);
   const { live, failed, block } = await verify(sp, pairs);
-  if (failed > pairs.length * 0.02) {
+  if (failed > pairs.length * 0.005) {
     log(sp, "too many failed reads", failed, "- keeping previous entry");
     return null;
   }
@@ -237,6 +244,7 @@ async function indexSpender(address: string, label: string, control: SpenderCont
     unpricedPairs: unpriced,
     approvalEvents: cp.events,
     eventNonzeroPairs: pairs.length,
+    unverifiedPairs: failed,
     topTokens: [...byToken]
       .sort((a, b) => b[1].usd - a[1].usd)
       .slice(0, 15)

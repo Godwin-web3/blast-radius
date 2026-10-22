@@ -28,6 +28,8 @@ export type IndexedSpender = {
   approvalEvents: number;
   /** Pairs whose last Approval event was non-zero (what event-only tools show). */
   eventNonzeroPairs: number;
+  /** Pairs whose on-chain read failed even after retries. Unknown, not zero. */
+  unverifiedPairs?: number;
   topTokens: IndexedToken[];
   topWallets: IndexedWallet[];
   /** Block the on-chain verification ran against. */
