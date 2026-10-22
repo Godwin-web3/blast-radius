@@ -42,3 +42,4 @@ data/verify.out
 data/*.disc.json
 .index-cache/
 out/
+data/
