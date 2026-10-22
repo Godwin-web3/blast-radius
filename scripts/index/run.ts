@@ -257,6 +257,7 @@ async function main() {
   const prev: SpenderIndex | null = existsSync(prevFile) ? JSON.parse(await readFile(prevFile, "utf8")) : null;
   const entries = new Map((prev?.spenders ?? []).map((s) => [s.address.toLowerCase(), s]));
   const skipped: SpenderIndex["skipped"] = [];
+  let stoppedEarly = false;
 
   const client = getChainClient(chain);
   const seen = new Set<string>();
@@ -282,6 +283,7 @@ async function main() {
     }
     if (Date.now() > DEADLINE) {
       log("budget exhausted, stopping before", s.label);
+      stoppedEarly = true;
       break;
     }
     const row = await indexSpender(a, s.label, control);
@@ -297,7 +299,8 @@ async function main() {
     generatedAt: new Date().toISOString(),
     chain: "ethereum",
     spenders: [...entries.values()].map(({ topWallets, ...rest }) => ({ ...rest, topWallets: topWallets.slice(0, 5) })),
-    skipped: only ? prev?.skipped ?? skipped : skipped,
+    // A partial pass (--only, or the time budget ran out) has not graded every spender.
+    skipped: only || stoppedEarly ? prev?.skipped ?? skipped : skipped,
   };
   await writeFile(prevFile, JSON.stringify(index, null, 1));
   log("wrote", index.spenders.length, "spenders");
