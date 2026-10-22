@@ -2,15 +2,21 @@ import { CHAINS } from "@/lib/chains";
 import { formatAllowance, formatUnits, shortAddress } from "@/lib/format";
 import { formatUsdCompact } from "@/lib/headline";
 import { isSplKind, type OpenApproval } from "@/lib/types";
+import Link from "next/link";
+
+/** Reverse-index totals per spender (lowercase address), from the nightly spender index. */
+export type SpenderExposure = Record<string, { movableUsd: number; wallets: number }>;
 
 export function ApprovalTable({
   approvals,
   explorerUrl = CHAINS.ethereum.explorer.addressUrl,
   family = "evm",
+  exposure,
 }: {
   approvals: OpenApproval[];
   explorerUrl?: (address: string) => string;
   family?: "evm" | "solana";
+  exposure?: SpenderExposure;
 }) {
   const solana = family === "solana";
   if (approvals.length === 0) {
@@ -110,6 +116,15 @@ export function ApprovalTable({
                           >
                             {shortAddress(a.control.controller.address, 5)}
                           </a>
+                        </div>
+                      ) : null}
+                      {exposure?.[a.spender.toLowerCase()] ? (
+                        <div style={{ marginTop: 4 }}>
+                          <Link href={`/spender/${a.spender}`}>
+                            Same key can move{" "}
+                            {formatUsdCompact(exposure[a.spender.toLowerCase()]!.movableUsd)} from{" "}
+                            {exposure[a.spender.toLowerCase()]!.wallets.toLocaleString("en-US")} wallets →
+                          </Link>
                         </div>
                       ) : null}
                     </>
