@@ -105,3 +105,41 @@ export function safeChecksum(a: string): string {
     return a;
   }
 }
+
+/** A fork proof: tokens actually moved to an attacker on a mainnet fork. */
+export type DrainProof = {
+  spender: string;
+  label: string;
+  grade: string;
+  controller: { address: string; kind: string; label?: string } | null;
+  block: number;
+  method: string;
+  note: string;
+  pairsAttacked: number;
+  walletsDrained: number;
+  transactions: number;
+  /** USD of tokens that actually landed in the attacker account, in-sim. */
+  provenDrainUsd: number;
+  /** The index's estimate for the whole spender, for comparison. */
+  indexMovableUsd: number;
+  byToken: { symbol: string; usd: number }[];
+  provenAt: string;
+};
+
+export function proofUrl(address: string): string {
+  return indexUrl().replace(/index\.json$/, `proofs/${address.toLowerCase()}.json`);
+}
+
+/** Fetch the published fork proof for one spender, or null when there isn't one. */
+export async function loadProof(address: string, timeoutMs = 4000): Promise<DrainProof | null> {
+  if (!/^0x[0-9a-fA-F]{40}$/.test(address)) return null;
+  try {
+    const res = await fetch(proofUrl(address), { signal: AbortSignal.timeout(timeoutMs), next: { revalidate: 900 } } as RequestInit);
+    if (!res.ok) return null;
+    const proof = (await res.json()) as DrainProof;
+    // A $0 proof is a true negative, not a headline; don't surface it as drainable.
+    return proof.provenDrainUsd > 0 ? proof : null;
+  } catch {
+    return null;
+  }
+}

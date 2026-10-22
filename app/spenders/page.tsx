@@ -1,7 +1,7 @@
 import { IndexNote } from "@/components/IndexNote";
 import { SiteFooter } from "@/components/SiteFooter";
 import { formatUsdCompact } from "@/lib/headline";
-import { loadSpenderIndex, rankSpenders } from "@/lib/spender-index";
+import { loadProof, loadSpenderIndex, rankSpenders } from "@/lib/spender-index";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -16,6 +16,9 @@ export const metadata: Metadata = {
 export default async function SpendersPage() {
   const index = await loadSpenderIndex();
   const rows = rankSpenders(index?.spenders ?? []);
+  const proofs = new Map(
+    (await Promise.all(rows.map(async (r) => [r.address.toLowerCase(), await loadProof(r.address)] as const))).filter(([, p]) => p),
+  );
   const total = rows.reduce((s, r) => s + r.movableUsd, 0);
   const wallets = rows.reduce((s, r) => s + r.wallets, 0);
 
@@ -55,6 +58,7 @@ export default async function SpendersPage() {
                 <th>Grade</th>
                 <th>Who can change it</th>
                 <th>Movable now</th>
+                <th>Proven drainable</th>
                 <th>Wallets</th>
               </tr>
             </thead>
@@ -72,6 +76,13 @@ export default async function SpendersPage() {
                   <td>
                     <strong>{formatUsdCompact(s.movableUsd)}</strong>
                     {s.unpricedPairs ? <div className="muted">+{s.unpricedPairs.toLocaleString("en-US")} unpriced</div> : null}
+                  </td>
+                  <td>
+                    {proofs.get(s.address.toLowerCase()) ? (
+                      <strong className="grade-f">{formatUsdCompact(proofs.get(s.address.toLowerCase())!.provenDrainUsd)}</strong>
+                    ) : (
+                      <span className="muted">—</span>
+                    )}
                   </td>
                   <td>{s.wallets.toLocaleString("en-US")}</td>
                 </tr>
