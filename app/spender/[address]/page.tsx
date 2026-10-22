@@ -2,7 +2,8 @@ import { IndexNote } from "@/components/IndexNote";
 import { SiteFooter } from "@/components/SiteFooter";
 import { CHAINS, walletPath } from "@/lib/chains";
 import { formatUsdCompact } from "@/lib/headline";
-import { indexUrl, type IndexedSpender } from "@/lib/spender-index";
+import { indexUrl, loadProof, type IndexedSpender } from "@/lib/spender-index";
+import { formatUsdCompact as fmt } from "@/lib/headline";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -35,6 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function SpenderPage({ params }: Props) {
   const s = await loadDetail((await params).address);
   if (!s) notFound();
+  const proof = await loadProof(s.address);
   const addr = CHAINS.ethereum.explorer.addressUrl;
   const deadShare = s.eventNonzeroPairs ? 1 - s.livePairs / s.eventNonzeroPairs : 0;
 
@@ -72,6 +74,15 @@ export default async function SpenderPage({ params }: Props) {
           <a href={addr(s.address)} target="_blank" rel="noreferrer">{s.address}</a>
         </p>
       </section>
+
+      {proof ? (
+        <div className="banner banner-hot" role="status">
+          <strong>Proven:</strong> on a mainnet fork at block {proof.block.toLocaleString("en-US")}, a compromised
+          controller drained <strong>{fmt(proof.provenDrainUsd)}</strong> from the {proof.walletsDrained} most-exposed
+          wallets in {proof.transactions === 1 ? "a single transaction" : `${proof.transactions} transactions`}. Tokens
+          actually moved in simulation, priced by DefiLlama — not an estimate.
+        </div>
+      ) : null}
 
       <div className="banner" role="status">
         {s.approvalEvents.toLocaleString("en-US")} Approval events. {s.eventNonzeroPairs.toLocaleString("en-US")} wallet-token pairs look

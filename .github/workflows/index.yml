@@ -49,13 +49,27 @@ jobs:
         env:
           ENVIO_API_TOKEN: ${{ secrets.ENVIO_API_TOKEN }}
           RPC_URL: ${{ secrets.RPC_URL }}
-          INDEX_BUDGET_MIN: "300"
+          INDEX_BUDGET_MIN: "240"
         run: |
           if [ -n "${{ inputs.only }}" ]; then
             npx tsx scripts/index/run.ts --only "${{ inputs.only }}"
           else
             npx tsx scripts/index/run.ts
           fi
+
+      - name: Install Foundry (anvil)
+        uses: foundry-rs/foundry-toolchain@v1
+
+      - name: Prove drains on a fork
+        env:
+          RPC_URL: ${{ secrets.RPC_URL }}
+        continue-on-error: true
+        run: |
+          node prover/compile.mjs
+          for f in out/spenders/*.json; do
+            addr=$(basename "$f" .json)
+            npx tsx prover/run.ts "$addr" || echo "proof failed for $addr"
+          done
 
       - name: Save discovery checkpoints
         if: always()

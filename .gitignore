@@ -43,3 +43,4 @@ data/*.disc.json
 .index-cache/
 out/
 data/
+prover/build/
