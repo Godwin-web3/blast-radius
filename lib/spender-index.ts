@@ -135,7 +135,10 @@ export async function loadProof(address: string, timeoutMs = 4000): Promise<Drai
   if (!/^0x[0-9a-fA-F]{40}$/.test(address)) return null;
   try {
     const res = await fetch(proofUrl(address), { signal: AbortSignal.timeout(timeoutMs), next: { revalidate: 900 } } as RequestInit);
-    return res.ok ? ((await res.json()) as DrainProof) : null;
+    if (!res.ok) return null;
+    const proof = (await res.json()) as DrainProof;
+    // A $0 proof is a true negative, not a headline; don't surface it as drainable.
+    return proof.provenDrainUsd > 0 ? proof : null;
   } catch {
     return null;
   }
