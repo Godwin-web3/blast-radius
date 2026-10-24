@@ -1,0 +1,60 @@
+{
+ "address": "0x0000000000A39bb272e79075ade125fd351887Ac",
+ "label": "Blur Pool",
+ "chain": "ethereum",
+ "grade": "C",
+ "summary": "Upgradeable. A 3-of-5 Safe can swap the code.",
+ "controller": {
+  "address": "0xFA9fB502534761dBDDAcf5B7e2Aa84684815F1bb",
+  "kind": "safe",
+  "label": "3-of-5 Safe"
+ },
+ "movableUsd": 0,
+ "wallets": 7,
+ "livePairs": 7,
+ "unlimitedLivePairs": 7,
+ "unpricedPairs": 0,
+ "approvalEvents": 89,
+ "eventNonzeroPairs": 86,
+ "unverifiedPairs": 0,
+ "topTokens": [
+  {
+   "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+   "symbol": "WETH",
+   "usd": 0,
+   "wallets": 7
+  }
+ ],
+ "topWallets": [
+  {
+   "address": "0x37f8FACA38712385403AdCBF8F9E148E27FE0E5C",
+   "usd": 0
+  },
+  {
+   "address": "0x9c92Ff69F5fDC6b9B140C7F95117d01dF5ce7B20",
+   "usd": 0
+  },
+  {
+   "address": "0xB0Ce81def3Ca19eD69f45b143C87C87Cc1126c45",
+   "usd": 0
+  },
+  {
+   "address": "0xc95c1d58945046C06bBa4b037b1f60117ECA17C3",
+   "usd": 0
+  },
+  {
+   "address": "0xF9e1A2143D2145bF68B7518d572BC09f628A6732",
+   "usd": 0
+  },
+  {
+   "address": "0x7165b91084AA2420B5616196502fD86699dBf60C",
+   "usd": 0
+  },
+  {
+   "address": "0x2571697d8a3E228E73dca7C6967771c2823b4dAB",
+   "usd": 0
+  }
+ ],
+ "block": 26261308,
+ "updatedAt": "2026-10-24T08:28:33.243Z"
+}

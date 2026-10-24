@@ -1,0 +1,760 @@
+{
+ "version": 1,
+ "generatedAt": "2026-10-24T08:28:38.286Z",
+ "chain": "ethereum",
+ "spenders": [
+  {
+   "address": "0x000000000000Ad05Ccc4F10045630fb830B95127",
+   "label": "Blur Marketplace",
+   "chain": "ethereum",
+   "grade": "C",
+   "summary": "Upgradeable. A 3-of-5 Safe can swap the code.",
+   "controller": {
+    "address": "0xFA9fB502534761dBDDAcf5B7e2Aa84684815F1bb",
+    "kind": "safe",
+    "label": "3-of-5 Safe"
+   },
+   "movableUsd": 0,
+   "wallets": 2,
+   "livePairs": 2,
+   "unlimitedLivePairs": 1,
+   "unpricedPairs": 0,
+   "approvalEvents": 8,
+   "eventNonzeroPairs": 6,
+   "unverifiedPairs": 0,
+   "topTokens": [
+    {
+     "address": "0x9E9FbDE7C7a83c43913BddC8779158F1368F0413",
+     "symbol": "pandora",
+     "usd": 0,
+     "wallets": 1
+    },
+    {
+     "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+     "symbol": "WETH",
+     "usd": 0,
+     "wallets": 1
+    }
+   ],
+   "block": 26261308,
+   "updatedAt": "2026-10-24T08:28:32.638Z",
+   "topWallets": [
+    {
+     "address": "0x0D1B7532bFABD2C06fDf91AE39BA7baa262C560d",
+     "usd": 0
+    },
+    {
+     "address": "0x40357bd6160f9bD57cbFceB8Fcf282d87e7aF6a0",
+     "usd": 0
+    }
+   ]
+  },
+  {
+   "address": "0x0000000000A39bb272e79075ade125fd351887Ac",
+   "label": "Blur Pool",
+   "chain": "ethereum",
+   "grade": "C",
+   "summary": "Upgradeable. A 3-of-5 Safe can swap the code.",
+   "controller": {
+    "address": "0xFA9fB502534761dBDDAcf5B7e2Aa84684815F1bb",
+    "kind": "safe",
+    "label": "3-of-5 Safe"
+   },
+   "movableUsd": 0,
+   "wallets": 7,
+   "livePairs": 7,
+   "unlimitedLivePairs": 7,
+   "unpricedPairs": 0,
+   "approvalEvents": 89,
+   "eventNonzeroPairs": 86,
+   "unverifiedPairs": 0,
+   "topTokens": [
+    {
+     "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+     "symbol": "WETH",
+     "usd": 0,
+     "wallets": 7
+    }
+   ],
+   "block": 26261308,
+   "updatedAt": "2026-10-24T08:28:33.243Z",
+   "topWallets": [
+    {
+     "address": "0x37f8FACA38712385403AdCBF8F9E148E27FE0E5C",
+     "usd": 0
+    },
+    {
+     "address": "0x9c92Ff69F5fDC6b9B140C7F95117d01dF5ce7B20",
+     "usd": 0
+    },
+    {
+     "address": "0xB0Ce81def3Ca19eD69f45b143C87C87Cc1126c45",
+     "usd": 0
+    },
+    {
+     "address": "0xc95c1d58945046C06bBa4b037b1f60117ECA17C3",
+     "usd": 0
+    },
+    {
+     "address": "0xF9e1A2143D2145bF68B7518d572BC09f628A6732",
+     "usd": 0
+    }
+   ]
+  },
+  {
+   "address": "0x6352a56caadC4F1E25CD6c75970Fa768A3304e64",
+   "label": "OpenOcean Exchange",
+   "chain": "ethereum",
+   "grade": "F",
+   "summary": "Upgradeable. One EOA (via ProxyAdmin) can swap the code.",
+   "controller": {
+    "address": "0xf4ecfcbeE7469f6479956E80854ee9407D85C25A",
+    "kind": "eoa",
+    "label": "Single EOA via ProxyAdmin"
+   },
+   "movableUsd": 3534062,
+   "wallets": 4669,
+   "livePairs": 6516,
+   "unlimitedLivePairs": 2675,
+   "unpricedPairs": 2439,
+   "approvalEvents": 648491,
+   "eventNonzeroPairs": 99582,
+   "unverifiedPairs": 0,
+   "topTokens": [
+    {
+     "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+     "symbol": "USDC",
+     "usd": 1213871,
+     "wallets": 828
+    },
+    {
+     "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+     "symbol": "DAI",
+     "usd": 879046,
+     "wallets": 59
+    },
+    {
+     "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+     "symbol": "WETH",
+     "usd": 299168,
+     "wallets": 116
+    },
+    {
+     "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+     "symbol": "WBTC",
+     "usd": 259017,
+     "wallets": 21
+    },
+    {
+     "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+     "symbol": "USDT",
+     "usd": 229470,
+     "wallets": 568
+    },
+    {
+     "address": "0x6982508145454Ce325dDbE47a25d4ec3d2311933",
+     "symbol": "PEPE",
+     "usd": 195163,
+     "wallets": 17
+    },
+    {
+     "address": "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84",
+     "symbol": "stETH",
+     "usd": 145644,
+     "wallets": 528
+    },
+    {
+     "address": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
+     "symbol": "cbBTC",
+     "usd": 80720,
+     "wallets": 3
+    },
+    {
+     "address": "0xD31a59c85aE9D8edEFeC411D448f90841571b89c",
+     "symbol": "SOL",
+     "usd": 61838,
+     "wallets": 5
+    },
+    {
+     "address": "0x85f138bfEE4ef8e540890CFb48F620571d67Eda3",
+     "symbol": "WAVAX",
+     "usd": 24566,
+     "wallets": 3
+    },
+    {
+     "address": "0x514910771AF9Ca656af840dff83E8264EcF986CA",
+     "symbol": "LINK",
+     "usd": 18581,
+     "wallets": 19
+    },
+    {
+     "address": "0xae78736Cd615f374D3085123A210448E74Fc6393",
+     "symbol": "rETH",
+     "usd": 17749,
+     "wallets": 3
+    },
+    {
+     "address": "0x4a220E6096B25EADb88358cb44068A3248254675",
+     "symbol": "QNT",
+     "usd": 13362,
+     "wallets": 5
+    },
+    {
+     "address": "0xD533a949740bb3306d119CC777fa900bA034cd52",
+     "symbol": "CRV",
+     "usd": 12952,
+     "wallets": 16
+    },
+    {
+     "address": "0xe28b3B32B6c345A34Ff64674606124Dd5Aceca30",
+     "symbol": "INJ",
+     "usd": 9458,
+     "wallets": 6
+    }
+   ],
+   "block": 26260945,
+   "updatedAt": "2026-10-24T07:18:23.962Z",
+   "topWallets": [
+    {
+     "address": "0x26D20f830c7E2Ad30346DF7704e3531cd65863a1",
+     "usd": 870417
+    },
+    {
+     "address": "0x65A8F07Bd9A8598E1b5B6C0a88F4779DBC077675",
+     "usd": 408122
+    },
+    {
+     "address": "0xA0b23e0F09B70828574Eb5C0e9Ab4d95d929df47",
+     "usd": 238502
+    },
+    {
+     "address": "0xCfF5d843D09d38aF43F969fabA55EC03D8577a27",
+     "usd": 194673
+    },
+    {
+     "address": "0x0dd16C537cDb346826203F3aB762030E7f20C78a",
+     "usd": 172646
+    }
+   ]
+  },
+  {
+   "address": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+   "label": "Across Protocol: SpokePool",
+   "chain": "ethereum",
+   "grade": "C",
+   "summary": "Upgradeable. A 3-of-5 Safe (via ProxyAdmin) can swap the code.",
+   "controller": {
+    "address": "0xB524735356985D2f267FA010D681f061DfF03715",
+    "kind": "safe",
+    "label": "3-of-5 Safe via ProxyAdmin"
+   },
+   "movableUsd": 40585345,
+   "wallets": 8501,
+   "livePairs": 8736,
+   "unlimitedLivePairs": 7549,
+   "unpricedPairs": 4,
+   "approvalEvents": 945450,
+   "eventNonzeroPairs": 158641,
+   "unverifiedPairs": 0,
+   "topTokens": [
+    {
+     "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+     "symbol": "USDC",
+     "usd": 26089895,
+     "wallets": 5959
+    },
+    {
+     "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+     "symbol": "USDT",
+     "usd": 5751990,
+     "wallets": 1908
+    },
+    {
+     "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+     "symbol": "WETH",
+     "usd": 5051208,
+     "wallets": 490
+    },
+    {
+     "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+     "symbol": "WBTC",
+     "usd": 3628167,
+     "wallets": 152
+    },
+    {
+     "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+     "symbol": "DAI",
+     "usd": 24370,
+     "wallets": 93
+    },
+    {
+     "address": "0x6033F7f88332B8db6ad452B7C6D5bB643990aE3f",
+     "symbol": "lsk",
+     "usd": 16004,
+     "wallets": 13
+    },
+    {
+     "address": "0x163f8C2467924be0ae7B5347228CABF260318753",
+     "symbol": "WLD",
+     "usd": 12304,
+     "wallets": 8
+    },
+    {
+     "address": "0x44108f0223A3C3028F5Fe7AEC7f9bb2E66beF82F",
+     "symbol": "ACX",
+     "usd": 8645,
+     "wallets": 25
+    },
+    {
+     "address": "0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F",
+     "symbol": "SNX",
+     "usd": 2325,
+     "wallets": 11
+    },
+    {
+     "address": "0xe343167631d89B6Ffc58B88d6b7fB0228795491D",
+     "symbol": "USDG",
+     "usd": 315,
+     "wallets": 29
+    },
+    {
+     "address": "0x04Fa0d235C4abf4BcF4787aF4CF447DE572eF828",
+     "symbol": "UMA",
+     "usd": 78,
+     "wallets": 4
+    },
+    {
+     "address": "0xba100000625a3754423978a60c9317c58a424e3D",
+     "symbol": "BAL",
+     "usd": 28,
+     "wallets": 4
+    },
+    {
+     "address": "0x59D9356E565Ab3A36dD77763Fc0d87fEaf85508C",
+     "symbol": "USDM",
+     "usd": 9,
+     "wallets": 2
+    },
+    {
+     "address": "0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f",
+     "symbol": "GHO",
+     "usd": 3,
+     "wallets": 10
+    },
+    {
+     "address": "0x85F17Cf997934a597031b2E18a9aB6ebD4B9f6a4",
+     "symbol": "NEAR",
+     "usd": 2,
+     "wallets": 2
+    }
+   ],
+   "block": 26261055,
+   "updatedAt": "2026-10-24T07:41:49.279Z",
+   "topWallets": [
+    {
+     "address": "0x2020BcC54AD8f147Bc671761a9b9e20b035b20Fc",
+     "usd": 7137006
+    },
+    {
+     "address": "0x07aE8551Be970cB1cCa11Dd7a11F47Ae82e70E67",
+     "usd": 4540551
+    },
+    {
+     "address": "0x01BC8aad10693187A706B0F6AA222B7EBF54d0F0",
+     "usd": 2649696
+    },
+    {
+     "address": "0x7d3ecDa2850c5709b7bFbDBc2A1579DBB8981D5d",
+     "usd": 999706,
+     "isContract": false
+    },
+    {
+     "address": "0x06925dE5Ab91EFB61407f8ACD308E4077454b970",
+     "usd": 936763
+    }
+   ]
+  },
+  {
+   "address": "0xDef1C0ded9bec7F1a1670819833240f027b25EfF",
+   "label": "0x Exchange Proxy",
+   "chain": "ethereum",
+   "grade": "B",
+   "summary": "No standard upgrade path, but an unrecognised contract owns its admin functions.",
+   "controller": {
+    "address": "0x618F9C67CE7Bf1a50afa1E7e0238422601b0ff6e",
+    "kind": "contract",
+    "label": "contract"
+   },
+   "movableUsd": 81127539,
+   "wallets": 43107,
+   "livePairs": 54079,
+   "unlimitedLivePairs": 44663,
+   "unpricedPairs": 22913,
+   "approvalEvents": 6922834,
+   "eventNonzeroPairs": 1799214,
+   "unverifiedPairs": 0,
+   "topTokens": [
+    {
+     "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+     "symbol": "USDC",
+     "usd": 22589416,
+     "wallets": 5824
+    },
+    {
+     "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+     "symbol": "WETH",
+     "usd": 16613731,
+     "wallets": 1408
+    },
+    {
+     "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+     "symbol": "WBTC",
+     "usd": 15736126,
+     "wallets": 266
+    },
+    {
+     "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+     "symbol": "USDT",
+     "usd": 13099755,
+     "wallets": 2315
+    },
+    {
+     "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+     "symbol": "DAI",
+     "usd": 2494879,
+     "wallets": 979
+    },
+    {
+     "address": "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84",
+     "symbol": "stETH",
+     "usd": 2235277,
+     "wallets": 638
+    },
+    {
+     "address": "0xE95A203B1a91a908F9B9CE46459d101078c2c3cb",
+     "symbol": "ankrETH",
+     "usd": 2207093,
+     "wallets": 5
+    },
+    {
+     "address": "0x514910771AF9Ca656af840dff83E8264EcF986CA",
+     "symbol": "LINK",
+     "usd": 1220105,
+     "wallets": 269
+    },
+    {
+     "address": "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+     "symbol": "UNI",
+     "usd": 1152331,
+     "wallets": 296
+    },
+    {
+     "address": "0xaA7a9CA87d3694B5755f213B5D04094b8d0F0A6F",
+     "symbol": "TRAC",
+     "usd": 543397,
+     "wallets": 16
+    },
+    {
+     "address": "0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39",
+     "symbol": "HEX",
+     "usd": 453786,
+     "wallets": 729
+    },
+    {
+     "address": "0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE",
+     "symbol": "SHIB",
+     "usd": 304744,
+     "wallets": 536
+    },
+    {
+     "address": "0x45804880De22913dAFE09f4980848ECE6EcbAf78",
+     "symbol": "PAXG",
+     "usd": 196000,
+     "wallets": 10
+    },
+    {
+     "address": "0x6982508145454Ce325dDbE47a25d4ec3d2311933",
+     "symbol": "PEPE",
+     "usd": 164961,
+     "wallets": 256
+    },
+    {
+     "address": "0xBe9895146f7AF43049ca1c1AE358B0541Ea49704",
+     "symbol": "cbETH",
+     "usd": 163518,
+     "wallets": 173
+    }
+   ],
+   "block": 26261075,
+   "updatedAt": "2026-10-24T08:28:31.771Z",
+   "topWallets": [
+    {
+     "address": "0x51C72848c68a965f66FA7a88855F9f7784502a7F",
+     "usd": 37539848,
+     "isContract": true
+    },
+    {
+     "address": "0xe2c6013e386c4117f4AD468Be7DFa32B0683F6ce",
+     "usd": 4425282
+    },
+    {
+     "address": "0x25431341A5800759268a6aC1d3CD91C029D7d9CA",
+     "usd": 4184356
+    },
+    {
+     "address": "0x54533ebD3DBd49C11993b7a449c9235206058063",
+     "usd": 3802689,
+     "isContract": true
+    },
+    {
+     "address": "0xE7Da19d08Df73c9371080A14B8e6FdCA9243e16e",
+     "usd": 3224116
+    }
+   ]
+  },
+  {
+   "address": "0x6131B5fae19EA4f9D964eAc0408E4408b66337b5",
+   "label": "KyberSwap Meta Aggregation Router",
+   "chain": "ethereum",
+   "grade": "C",
+   "summary": "No standard upgrade path, but one EOA owns its admin functions.",
+   "controller": {
+    "address": "0xBE2F0354D970265BFc36D383af77F72736b81B54",
+    "kind": "eoa",
+    "label": "Single EOA"
+   },
+   "movableUsd": 7062664752,
+   "wallets": 30761,
+   "livePairs": 40996,
+   "unlimitedLivePairs": 26645,
+   "unpricedPairs": 26247,
+   "approvalEvents": 3460805,
+   "eventNonzeroPairs": 728247,
+   "unverifiedPairs": 0,
+   "topTokens": [
+    {
+     "address": "0xb4357054c3dA8D46eD642383F03139aC7f090343",
+     "symbol": "PORT3",
+     "usd": 7004556393,
+     "wallets": 2
+    },
+    {
+     "address": "0xF21A2e258b8dD490d0165fa11Bcf2F97BB557c77",
+     "symbol": "SOLX",
+     "usd": 15519080,
+     "wallets": 9
+    },
+    {
+     "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+     "symbol": "USDT",
+     "usd": 10331805,
+     "wallets": 2385
+    },
+    {
+     "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+     "symbol": "DAI",
+     "usd": 7389078,
+     "wallets": 140
+    },
+    {
+     "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+     "symbol": "USDC",
+     "usd": 5522402,
+     "wallets": 1907
+    },
+    {
+     "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+     "symbol": "WETH",
+     "usd": 4025335,
+     "wallets": 978
+    },
+    {
+     "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+     "symbol": "WBTC",
+     "usd": 3153423,
+     "wallets": 146
+    },
+    {
+     "address": "0x19Ebd191f7A24ECE672ba13A302212b5eF7F35cb",
+     "symbol": "yUSD",
+     "usd": 2994474,
+     "wallets": 3
+    },
+    {
+     "address": "0x044fe33895Cb7c6e4566DA8E24420C1110933a63",
+     "symbol": "WOLF",
+     "usd": 1658408,
+     "wallets": 1
+    },
+    {
+     "address": "0x68749665FF8D2d112Fa859AA293F07A622782F38",
+     "symbol": "xaut",
+     "usd": 1064971,
+     "wallets": 23
+    },
+    {
+     "address": "0x4d5F47FA6A74757f35C14fD3a6Ef8E3C9BC514E8",
+     "symbol": "aEthWETH",
+     "usd": 717846,
+     "wallets": 26
+    },
+    {
+     "address": "0x6982508145454Ce325dDbE47a25d4ec3d2311933",
+     "symbol": "PEPE",
+     "usd": 413930,
+     "wallets": 128
+    },
+    {
+     "address": "0x45804880De22913dAFE09f4980848ECE6EcbAf78",
+     "symbol": "PAXG",
+     "usd": 316728,
+     "wallets": 30
+    },
+    {
+     "address": "0x514910771AF9Ca656af840dff83E8264EcF986CA",
+     "symbol": "LINK",
+     "usd": 303514,
+     "wallets": 60
+    },
+    {
+     "address": "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84",
+     "symbol": "stETH",
+     "usd": 262779,
+     "wallets": 244
+    }
+   ],
+   "block": 26260958,
+   "updatedAt": "2026-10-24T07:37:57.046Z",
+   "topWallets": [
+    {
+     "address": "0xFa593a29D121C10F806E4c332eEbe5E3d0807aF5",
+     "usd": 7004556393
+    },
+    {
+     "address": "0xFd57279f63D742A43CFd13279a32281c9368BfF4",
+     "usd": 13142674
+    },
+    {
+     "address": "0xBEE3211ab312a8D065c4FeF0247448e17A8da000",
+     "usd": 5613908,
+     "isContract": true
+    },
+    {
+     "address": "0x303D0A175CeEC14DD7B3d4F60CABE6CEc06a3d9F",
+     "usd": 4874790
+    },
+    {
+     "address": "0xB1648C528a46f953A64FE4DE9A1f83159D1254ff",
+     "usd": 4369092
+    }
+   ]
+  }
+ ],
+ "skipped": [
+  {
+   "address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+   "label": "Uniswap V2: Router",
+   "grade": "A"
+  },
+  {
+   "address": "0xE592427A0AEce92De3Edee1F18E0157C05861564",
+   "label": "Uniswap V3: Router",
+   "grade": "A"
+  },
+  {
+   "address": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+   "label": "Uniswap V3: Router 2",
+   "grade": "A"
+  },
+  {
+   "address": "0x3fC91A3afd70395Cd496C647d5a6CC9D4B2b7FAD",
+   "label": "Uniswap Universal Router",
+   "grade": "A"
+  },
+  {
+   "address": "0x66a9893cC07D91D95644AEDD05D03f95e1dBA8Af",
+   "label": "Uniswap Universal Router V2",
+   "grade": "A"
+  },
+  {
+   "address": "0x4C82D1fBFe28C977cBB58D8C7FF8FCF9F70a2cCA",
+   "label": "Uniswap Universal Router 2.1",
+   "grade": "A"
+  },
+  {
+   "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+   "label": "Uniswap Permit2",
+   "grade": "A"
+  },
+  {
+   "address": "0xC36442b4a4522E871399CD717aBDD847Ab11FE88",
+   "label": "Uniswap V3: Positions NFT",
+   "grade": "A"
+  },
+  {
+   "address": "0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e",
+   "label": "Uniswap V4: Position Manager",
+   "grade": "A"
+  },
+  {
+   "address": "0x4D9079Bb4165aeb4084c526a32695dCfd2F77381",
+   "label": "Across Protocol: SpokePool",
+   "grade": "B"
+  },
+  {
+   "address": "0x1111111254EEB25477B68fb85Ed929f73A960582",
+   "label": "1inch v5 Aggregation Router",
+   "grade": "B"
+  },
+  {
+   "address": "0x111111125421cA6dc452d289314280a0f8842A65",
+   "label": "1inch v6 Aggregation Router",
+   "grade": "B"
+  },
+  {
+   "address": "0x00000000000000ADc04C56Bf30aC9d3c0aAF14dC",
+   "label": "OpenSea Seaport 1.5",
+   "grade": "A"
+  },
+  {
+   "address": "0x0000000000000068F116a894984e2DB1123eB395",
+   "label": "OpenSea Seaport 1.6",
+   "grade": "A"
+  },
+  {
+   "address": "0x59728544B08AB483533076417FbBB2fD0B17CE3a",
+   "label": "LooksRare Exchange",
+   "grade": "B"
+  },
+  {
+   "address": "0x1E0049783F008A0085193E00003D00cd54003c71",
+   "label": "OpenSea Conduit",
+   "grade": "A"
+  },
+  {
+   "address": "0x9008D19f58AAbD9eD0D60971565AA8510560ab41",
+   "label": "CoW Protocol: GPv2 Vault Relayer",
+   "grade": "A"
+  },
+  {
+   "address": "0xBA12222222228d8Ba445958a75a0704d566BF2C8",
+   "label": "Balancer Vault",
+   "grade": "A"
+  },
+  {
+   "address": "0x1111111254fb6c44bAC0beD2854e76F90643097d",
+   "label": "1inch v4 Aggregation Router",
+   "grade": "B"
+  },
+  {
+   "address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
+   "label": "SushiSwap: Router",
+   "grade": "A"
+  },
+  {
+   "address": "0xDEF171Fe48CF0115B1d80b88dc8eAB59176FEe57",
+   "label": "Paraswap Augustus",
+   "grade": "A"
+  }
+ ]
+}
