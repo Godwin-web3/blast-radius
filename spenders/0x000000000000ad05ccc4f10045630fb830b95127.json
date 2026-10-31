@@ -1,0 +1,46 @@
+{
+ "address": "0x000000000000Ad05Ccc4F10045630fb830B95127",
+ "label": "Blur Marketplace",
+ "chain": "ethereum",
+ "grade": "C",
+ "summary": "Upgradeable. A 3-of-5 Safe can swap the code.",
+ "controller": {
+  "address": "0xFA9fB502534761dBDDAcf5B7e2Aa84684815F1bb",
+  "kind": "safe",
+  "label": "3-of-5 Safe"
+ },
+ "movableUsd": 0,
+ "wallets": 2,
+ "livePairs": 2,
+ "unlimitedLivePairs": 1,
+ "unpricedPairs": 0,
+ "approvalEvents": 8,
+ "eventNonzeroPairs": 6,
+ "unverifiedPairs": 0,
+ "topTokens": [
+  {
+   "address": "0x9E9FbDE7C7a83c43913BddC8779158F1368F0413",
+   "symbol": "pandora",
+   "usd": 0,
+   "wallets": 1
+  },
+  {
+   "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+   "symbol": "WETH",
+   "usd": 0,
+   "wallets": 1
+  }
+ ],
+ "topWallets": [
+  {
+   "address": "0x0D1B7532bFABD2C06fDf91AE39BA7baa262C560d",
+   "usd": 0
+  },
+  {
+   "address": "0x40357bd6160f9bD57cbFceB8Fcf282d87e7aF6a0",
+   "usd": 0
+  }
+ ],
+ "block": 26311530,
+ "updatedAt": "2026-10-31T08:24:17.139Z"
+}
