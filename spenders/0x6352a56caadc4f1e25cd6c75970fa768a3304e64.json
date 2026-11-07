@@ -1,0 +1,322 @@
+{
+ "address": "0x6352a56caadC4F1E25CD6c75970Fa768A3304e64",
+ "label": "OpenOcean Exchange",
+ "chain": "ethereum",
+ "grade": "F",
+ "summary": "Upgradeable. One EOA (via ProxyAdmin) can swap the code.",
+ "controller": {
+  "address": "0xf4ecfcbeE7469f6479956E80854ee9407D85C25A",
+  "kind": "eoa",
+  "label": "Single EOA via ProxyAdmin"
+ },
+ "movableUsd": 2447280,
+ "wallets": 5022,
+ "livePairs": 6998,
+ "unlimitedLivePairs": 2890,
+ "unpricedPairs": 2624,
+ "approvalEvents": 650978,
+ "eventNonzeroPairs": 99894,
+ "unverifiedPairs": 0,
+ "topTokens": [
+  {
+   "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+   "symbol": "USDC",
+   "usd": 932016,
+   "wallets": 924
+  },
+  {
+   "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+   "symbol": "USDT",
+   "usd": 362924,
+   "wallets": 635
+  },
+  {
+   "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+   "symbol": "WETH",
+   "usd": 284070,
+   "wallets": 118
+  },
+  {
+   "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+   "symbol": "WBTC",
+   "usd": 221845,
+   "wallets": 23
+  },
+  {
+   "address": "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84",
+   "symbol": "stETH",
+   "usd": 179626,
+   "wallets": 618
+  },
+  {
+   "address": "0xF21A2e258b8dD490d0165fa11Bcf2F97BB557c77",
+   "symbol": "SOLX",
+   "usd": 79082,
+   "wallets": 2
+  },
+  {
+   "address": "0x808507121B80c02388fAd14726482e061B8da827",
+   "symbol": "PENDLE",
+   "usd": 78493,
+   "wallets": 12
+  },
+  {
+   "address": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
+   "symbol": "cbBTC",
+   "usd": 76001,
+   "wallets": 2
+  },
+  {
+   "address": "0xD31a59c85aE9D8edEFeC411D448f90841571b89c",
+   "symbol": "SOL",
+   "usd": 67935,
+   "wallets": 4
+  },
+  {
+   "address": "0x85f138bfEE4ef8e540890CFb48F620571d67Eda3",
+   "symbol": "WAVAX",
+   "usd": 28715,
+   "wallets": 2
+  },
+  {
+   "address": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+   "symbol": "wstETH",
+   "usd": 26895,
+   "wallets": 15
+  },
+  {
+   "address": "0x514910771AF9Ca656af840dff83E8264EcF986CA",
+   "symbol": "LINK",
+   "usd": 18762,
+   "wallets": 21
+  },
+  {
+   "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+   "symbol": "DAI",
+   "usd": 15703,
+   "wallets": 61
+  },
+  {
+   "address": "0xe28b3B32B6c345A34Ff64674606124Dd5Aceca30",
+   "symbol": "INJ",
+   "usd": 10139,
+   "wallets": 10
+  },
+  {
+   "address": "0x3d7d6fdf07EE548B939A80edbc9B2256d0cdc003",
+   "symbol": "srUSDe",
+   "usd": 9110,
+   "wallets": 2
+  }
+ ],
+ "topWallets": [
+  {
+   "address": "0x65A8F07Bd9A8598E1b5B6C0a88F4779DBC077675",
+   "usd": 568532
+  },
+  {
+   "address": "0xcD71b768A628386A6F384b9DD55c2905932F378C",
+   "usd": 110131
+  },
+  {
+   "address": "0xAF92CA9Dc4fd243dF6A0be70cE5FF9409acD63aF",
+   "usd": 100548
+  },
+  {
+   "address": "0x1c165CE53E9C5af5E9296f2756C358082B1f7671",
+   "usd": 94054
+  },
+  {
+   "address": "0x7b7E66Ef85a77Bbd7344BF3E7b3c8Ee274C98F44",
+   "usd": 79981
+  },
+  {
+   "address": "0x044dD62cdB78EB4129Fe93cC1fa017f161a9C7BF",
+   "usd": 77289
+  },
+  {
+   "address": "0xe4DB8Dd92bF14F9F7136BBFf206B6357e73e2E83",
+   "usd": 77243
+  },
+  {
+   "address": "0x8ACBE646e2B8A890c560133Ed8bdCaAFa007f3E6",
+   "usd": 77041
+  },
+  {
+   "address": "0x0C4085d8E714CA77aC5F46CD2b80A92d238A7CD3",
+   "usd": 76001,
+   "isContract": false
+  },
+  {
+   "address": "0xDC6a112C8BFcCfA46Db464ccEE7daa9669e97565",
+   "usd": 61406
+  },
+  {
+   "address": "0xc705337e20b1dfe87649f80a019c7DB116F2873d",
+   "usd": 45620
+  },
+  {
+   "address": "0x6A9B9fFC89555899227b753d7eD2fEBA97DfeF46",
+   "usd": 33998
+  },
+  {
+   "address": "0xA22fFcb5295C1bEB7238E3914E19e0bC18Db8f23",
+   "usd": 29962
+  },
+  {
+   "address": "0x7db0Db8Ae944833F71D0B61D53b30Bfe445237a2",
+   "usd": 26895
+  },
+  {
+   "address": "0x8bF3c2D4a765d8De430D498FE745334010AeAFB8",
+   "usd": 25156
+  },
+  {
+   "address": "0x200c8695c4e6c50A5eCBF56E7419b42c807F79c1",
+   "usd": 24438,
+   "isContract": false
+  },
+  {
+   "address": "0x7737D3742DDc67F1443b40CBE6D401D649d3906A",
+   "usd": 21341
+  },
+  {
+   "address": "0x212D72267398D5a67a575Df4F6575Cfdb7ed4Da1",
+   "usd": 20669
+  },
+  {
+   "address": "0x572830f18f941Fe8bC92f2f5264Cc974C03E8CD1",
+   "usd": 19974
+  },
+  {
+   "address": "0x7eC0350A5CeCa661fc3c620b6E22DbA0ebF0826a",
+   "usd": 19650,
+   "isContract": false
+  },
+  {
+   "address": "0x49BD7F11015d460b3258Eea3bC3611D92264AEA5",
+   "usd": 18180
+  },
+  {
+   "address": "0x971b67D6579d5755D2Ad6eCa3CC78DBe68F2bD35",
+   "usd": 18001
+  },
+  {
+   "address": "0x648801D1BaF911b0433eBA8D6Dc22632c5537F60",
+   "usd": 17740
+  },
+  {
+   "address": "0x8CF3D5A66Ba8C23C1EcFfAb15892ea5b020c0BdB",
+   "usd": 16988
+  },
+  {
+   "address": "0x14FAa112a14b70328D2cA17102aAfE398F0c369c",
+   "usd": 16912,
+   "isContract": false
+  },
+  {
+   "address": "0x9CBF099ff424979439dFBa03F00B5961784c06ce",
+   "usd": 16654
+  },
+  {
+   "address": "0xd3C2ced602be22232d8Df732167444E882342b01",
+   "usd": 15545
+  },
+  {
+   "address": "0x42d02f4cd48BDAC116b7E3A4895f586777948FaE",
+   "usd": 15259
+  },
+  {
+   "address": "0x5577e2a4C4D334b691797e054bb8aCc790D08D87",
+   "usd": 15207,
+   "isContract": true
+  },
+  {
+   "address": "0xC9f5d507F8e16dc4C16dbBa7b8AA8C5c7107EF12",
+   "usd": 14996
+  },
+  {
+   "address": "0x8b4bdDAa976996f3Ee6DD07851095351E23ab90d",
+   "usd": 14371
+  },
+  {
+   "address": "0x7c942389f5248a9c2Cba111c08A1A34D55e15272",
+   "usd": 13338
+  },
+  {
+   "address": "0x2686b313a823f867adDF697D6E67016901188076",
+   "usd": 13266
+  },
+  {
+   "address": "0xE65DD5d5631C354Ab2cFE2a47C79655E68D6BF27",
+   "usd": 13203
+  },
+  {
+   "address": "0x6ce2900af471e53df44A37d5554Dc8285110A4B7",
+   "usd": 12831
+  },
+  {
+   "address": "0xEF8603B95e76BCAf00aF9B32aCf1E386815b9544",
+   "usd": 12822
+  },
+  {
+   "address": "0xcA216800bB9c5dc0B101Cb693Fd9240BE3eFa1de",
+   "usd": 12613
+  },
+  {
+   "address": "0x3C69ED167dA0d48a33C4FdDfE9D9a5db71557D7B",
+   "usd": 12475
+  },
+  {
+   "address": "0xE12B2a8fcf67AEe28dEAFCB8908e4179D770fd11",
+   "usd": 12117
+  },
+  {
+   "address": "0x473dd211e55F8295732e0208Fc3AEe51c5088eB8",
+   "usd": 12032
+  },
+  {
+   "address": "0xFd58743eC32d6A555F53d22e25e51949E3f60425",
+   "usd": 11928,
+   "isContract": false
+  },
+  {
+   "address": "0xcd81917ff5313d02d7Da3d47a9Afcd3f635c36e3",
+   "usd": 11288
+  },
+  {
+   "address": "0x35Dd9661C3Cfcbf8FeA6462220A0788E103e36d8",
+   "usd": 10943
+  },
+  {
+   "address": "0xEf8DC73AB9c6B89C73B4bB96524467fb38a88BeF",
+   "usd": 10139
+  },
+  {
+   "address": "0xba4E2e37F345385703EafFD36f7FF8cD8a244431",
+   "usd": 10021
+  },
+  {
+   "address": "0xe340472a596e4Ab24c36D212F39e7f634a9dC9e6",
+   "usd": 9987
+  },
+  {
+   "address": "0xba9A6D2Ba76faE1e08bB1D12A8cCBc46eA7735Cf",
+   "usd": 9107
+  },
+  {
+   "address": "0x5b213c449B16406Df5c7BF68eEFadC63447CEbAf",
+   "usd": 8982
+  },
+  {
+   "address": "0xf6CfcBd0A3A9d252918f0D7e75cc653332b3300B",
+   "usd": 8791
+  },
+  {
+   "address": "0xCf2b7c6Bc98bfE0D6138A25a3b6162B51F75e05d",
+   "usd": 8356
+  }
+ ],
+ "block": 26361863,
+ "updatedAt": "2026-11-07T08:47:25.162Z"
+}
